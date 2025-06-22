@@ -1,0 +1,28 @@
+# Core Libraries
+numpy
+pandas
+scikit-learn
+matplotlib
+seaborn
+
+# Audio Processing
+librosa==0.10.1
+pydub
+soundfile  # Required by librosa for reading/writing wav
+
+# Deep Learning
+tensorflow==2.14.0  
+
+# Experiment Tracking
+dvc==3.44.0
+
+# Web App (optional)
+flask
+
+# Utilities
+tqdm
+joblib
+
+# Optional - for visualizing MFCCs and audio
+jupyter
+ipython
