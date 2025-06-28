@@ -93,3 +93,12 @@ class FeatureExtractor:
 
         except Exception as outer_e:
             logging.critical(f"[CRITICAL] Feature extraction failed entirely: {outer_e}")
+
+if __name__ == "__main__":
+    data_dir = os.path.join(from_root(), "data/raw")
+    output_csv = os.path.join(from_root(), "data/interim/features.csv")
+
+    logging.info("Starting feature extraction process.")
+    feature_extractor = FeatureExtractor(sr=22050, duration=10)
+    feature_extractor.initialize_feature_extractor(data_dir, output_csv)
+    logging.info("Feature extraction completed successfully.")

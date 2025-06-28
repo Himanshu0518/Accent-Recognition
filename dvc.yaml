@@ -1,0 +1,31 @@
+stages:
+  feature_extraction:
+    cmd: python -m src.components.feature_extraction
+    deps:
+      - src/components/feature_extraction.py
+    outs:
+      - data/interim/features.csv
+
+  data_preprocessing:
+    cmd: python -m src.components.data_preprocessing
+    deps:
+      - src/components/data_preprocessing.py
+      - data/interim/features.csv
+    outs:
+      - data/preprocessed
+
+  model_training:
+    cmd: python -m src.components.model_training
+    deps:
+      - src/components/model_training.py
+      - data/preprocessed
+    outs:
+      - models/model.joblib
+
+  model_evaluation:
+    cmd: python -m src.components.model_evaluation
+    deps:
+      - src/components/model_evaluation.py
+      - models/model.joblib
+    outs:
+      - reports/metrics.yaml

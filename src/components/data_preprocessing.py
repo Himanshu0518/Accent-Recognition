@@ -4,9 +4,8 @@ import numpy as np
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.compose import ColumnTransformer
-import joblib
 from src.utils.main_utils import load_dataframe, save_dataframe
-
+from from_root import from_root
 from src.logger import logging
 
 
@@ -74,5 +73,14 @@ class DataPreprocessor:
             logging.info("✅ Data preprocessing completed and saved successfully.")
 
         except Exception as e:
-            logging.exception(f"❌ Error during preprocessing: {e}")
+            logging.exception(f"Error during preprocessing: {e}")
             raise
+
+if __name__ == "__main__":
+    input_csv = os.path.join(from_root(), "data/interim/features.csv")
+    output_dir = os.path.join(from_root(), "data/preprocessed")
+
+    logging.info("Starting data preprocessing...")
+    preprocessor = DataPreprocessor(input_csv=input_csv, output_dir=output_dir)
+    preprocessor.initiate_data_preprocessing()
+    logging.info("Data preprocessing finished.")

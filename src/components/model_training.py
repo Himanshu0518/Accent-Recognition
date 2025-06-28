@@ -16,12 +16,12 @@ class ModelTrainer:
         """
         estimators = dict(all_estimators(type_filter='classifier'))
         if model_name not in estimators:
-            raise ValueError(f"❌ Unsupported model type: {model_name}")
+            raise ValueError(f" Unsupported model type: {model_name}")
         return estimators[model_name](**model_params)
 
     def initiate_model_training(self, train_csv: str) -> None:
         try:
-            logging.info("📥 Loading training data...")
+            logging.info("Loading training data...")
             df = load_dataframe(train_csv)
             X = df.drop(columns=['label'])
             y = df['label']
@@ -45,3 +45,11 @@ class ModelTrainer:
         except Exception as e:
             logging.error(f"❌ Model training failed: {e}")
             raise e
+
+if __name__ == "__main__":
+    train_csv = os.path.join(from_root(), "data/preprocessed/train_data.csv")
+
+    logging.info("Starting model training process.")
+    trainer = ModelTrainer(model_path="models/model.joblib")
+    trainer.initiate_model_training(train_csv)
+    logging.info("Model training completed successfully.")

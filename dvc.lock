@@ -1,0 +1,64 @@
+schema: '2.0'
+stages:
+  feature_extraction:
+    cmd: python -m src.components.feature_extraction
+    deps:
+    - path: src/components/feature_extraction.py
+      hash: md5
+      md5: 5e888b2dbe69d7ae8bc6d6bc04bd67aa
+      size: 4247
+    outs:
+    - path: data/interim/features.csv
+      hash: md5
+      md5: 9687fe7b71e35d0f8ed59d5b03a4a5a6
+      size: 34466
+  data_preprocessing:
+    cmd: python -m src.components.data_preprocessing
+    deps:
+    - path: data/interim/features.csv
+      hash: md5
+      md5: 9687fe7b71e35d0f8ed59d5b03a4a5a6
+      size: 34466
+    - path: src/components/data_preprocessing.py
+      hash: md5
+      md5: 8ced3f7d6862ddb5f6f2262b90ed05e1
+      size: 3249
+    outs:
+    - path: data/preprocessed
+      hash: md5
+      md5: 2b9fbb21144c4d95ecca3511da7e004a.dir
+      size: 58803
+      nfiles: 2
+  model_training:
+    cmd: python -m src.components.model_training
+    deps:
+    - path: data/preprocessed
+      hash: md5
+      md5: 2b9fbb21144c4d95ecca3511da7e004a.dir
+      size: 58803
+      nfiles: 2
+    - path: src/components/model_training.py
+      hash: md5
+      md5: 1bfd04e347f77fe65b2af5f3b92581d7
+      size: 2304
+    outs:
+    - path: models/model.joblib
+      hash: md5
+      md5: e41e0fceddf1f1e295f5a9db98804dae
+      size: 252753
+  model_evaluation:
+    cmd: python -m src.components.model_evaluation
+    deps:
+    - path: models/model.joblib
+      hash: md5
+      md5: e41e0fceddf1f1e295f5a9db98804dae
+      size: 252753
+    - path: src/components/model_evaluation.py
+      hash: md5
+      md5: 35ae5004150877c50fef11d202322d84
+      size: 2051
+    outs:
+    - path: reports/metrics.yaml
+      hash: md5
+      md5: 84fa8a3750932471de50517fe3da08d3
+      size: 67

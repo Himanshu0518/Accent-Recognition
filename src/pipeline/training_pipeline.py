@@ -11,7 +11,7 @@ from src.components.model_evaluation import ModelEvaluator
 
 def run_feature_extraction():
     data_dir = os.path.join(from_root(), "data/raw")
-    output_csv = os.path.join(from_root(), "data/processed/features.csv")
+    output_csv = os.path.join(from_root(), "data/interim/features.csv")
 
     logging.info("Starting feature extraction process.")
     feature_extractor = FeatureExtractor(sr=22050, duration=10)
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     except Exception as e:
         logging.error(f"Model training failed: {e}")
 
-    # try:
-    #     run_model_evaluation()
-    # except Exception as e:
-    #     logging.error(f"❌ Model evaluation failed: {e}")
+    try:
+        run_model_evaluation()
+    except Exception as e:
+        logging.error(f"Model evaluation failed: {e}")
