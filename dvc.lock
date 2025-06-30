@@ -39,20 +39,20 @@ stages:
       nfiles: 2
     - path: src/components/model_training.py
       hash: md5
-      md5: a4e5cd5c2a6a79634c24888cc9d69909
-      size: 2343
+      md5: 9e7179bbca5e84cb58b8cf4a2ec87a11
+      size: 2345
     outs:
     - path: models/model.joblib
       hash: md5
-      md5: e41e0fceddf1f1e295f5a9db98804dae
-      size: 252753
+      md5: 32166ea70145c3b1a0282746c57b2c09
+      size: 1663
   model_evaluation:
     cmd: python -m src.components.model_evaluation
     deps:
     - path: models/model.joblib
       hash: md5
-      md5: e41e0fceddf1f1e295f5a9db98804dae
-      size: 252753
+      md5: 32166ea70145c3b1a0282746c57b2c09
+      size: 1663
     - path: src/components/model_evaluation.py
       hash: md5
       md5: 2f483fbcd022058a0cff8a29ae0e0274
@@ -60,5 +60,5 @@ stages:
     outs:
     - path: reports/metrics.yaml
       hash: md5
-      md5: 84fa8a3750932471de50517fe3da08d3
-      size: 67
+      md5: b2de0ae0e7f59a9755403005376d4506
+      size: 69

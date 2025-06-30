@@ -7,7 +7,7 @@ from sklearn.utils import all_estimators
 
 
 class ModelTrainer:
-    def __init__(self, model_path="models/model.joblib"):
+    def __init__(self, model_path= f"models/model.joblib"):
         self.model_path = os.path.join(from_root(), model_path)
 
     def _get_model_instance(self, model_name: str, model_params: dict) -> ClassifierMixin:
