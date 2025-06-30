@@ -30,22 +30,20 @@ stages:
       size: 58803
       nfiles: 2
   model_training:
-    cmd: python -m src.components.model_training
+    cmd: python -m src.pipeline.training_pipeline
     deps:
-    - path: data/preprocessed
-      hash: md5
-      md5: 2b9fbb21144c4d95ecca3511da7e004a.dir
-      size: 58803
-      nfiles: 2
-    - path: src/components/model_training.py
-      hash: md5
-      md5: 9e7179bbca5e84cb58b8cf4a2ec87a11
-      size: 2345
-    outs:
     - path: models/model.joblib
       hash: md5
       md5: 32166ea70145c3b1a0282746c57b2c09
       size: 1663
+    - path: reports/metrics.yaml
+      hash: md5
+      md5: b2de0ae0e7f59a9755403005376d4506
+      size: 69
+    - path: src/pipeline/training_pipeline.py
+      hash: md5
+      md5: c566cb17e49c4245236d5d2ce17304c2
+      size: 3658
   model_evaluation:
     cmd: python -m src.components.model_evaluation
     deps:
@@ -62,3 +60,18 @@ stages:
       hash: md5
       md5: b2de0ae0e7f59a9755403005376d4506
       size: 69
+  mlflow_logging:
+    cmd: python -m src.pipeline.training_pipeline
+    deps:
+    - path: models/model.joblib
+      hash: md5
+      md5: eae13f66791b43d470b9b514e5f85e74
+      size: 1663
+    - path: reports/metrics.yaml
+      hash: md5
+      md5: 5e0e5a8c9f009c1ee60eab2ece2d56c3
+      size: 67
+    - path: src/pipeline/training_pipeline.py
+      hash: md5
+      md5: 8fd675ad082b8a8c3ed16333ea6dc20f
+      size: 3694

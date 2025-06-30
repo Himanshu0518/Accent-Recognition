@@ -14,18 +14,25 @@ stages:
     outs:
       - data/preprocessed
 
-  model_training:
-    cmd: python -m src.components.model_training
-    deps:
-      - src/components/model_training.py
-      - data/preprocessed
-    outs:
-      - models/model.joblib
+  # model_training:
+  #   cmd: python -m src.components.model_training
+  #   deps:
+  #     - src/components/model_training.py
+  #     - data/preprocessed
+  #   outs:
+  #     - models/model.joblib
 
-  model_evaluation:
-    cmd: python -m src.components.model_evaluation
+  # model_evaluation:
+  #   cmd: python -m src.components.model_evaluation
+  #   deps:
+  #     - src/components/model_evaluation.py
+  #     - models/model.joblib
+  #   outs:
+  #     - reports/metrics.yaml
+
+  model_training:
+    cmd: python -m src.pipeline.training_pipeline
     deps:
-      - src/components/model_evaluation.py
+      - src/pipeline/training_pipeline.py
       - models/model.joblib
-    outs:
       - reports/metrics.yaml

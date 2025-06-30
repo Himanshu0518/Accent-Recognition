@@ -44,9 +44,3 @@ class ModelEvaluator:
             logging.error(f"Model evaluation failed: {e}")
             raise e
 
-if __name__ == "__main__":
-    test_csv = os.path.join(from_root(), "data/preprocessed/test_data.csv")
-    logging.info("Starting model evaluation process...")
-    evaluator = ModelEvaluator(model_path="models/model.joblib")
-    evaluator.initiate_model_evaluation(test_csv)
-    logging.info("Model evaluation completed successfully.")

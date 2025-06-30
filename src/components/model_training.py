@@ -49,10 +49,3 @@ class ModelTrainer:
             logging.error(f"Model training failed: {e}")
             raise e
 
-if __name__ == "__main__":
-    train_csv = os.path.join(from_root(), "data/preprocessed/train_data.csv")
-
-    logging.info("Starting model training process.")
-    trainer = ModelTrainer(model_path="models/model.joblib")
-    trainer.initiate_model_training(train_csv)
-    logging.info("Model training completed successfully.")

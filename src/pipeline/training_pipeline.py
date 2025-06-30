@@ -2,12 +2,9 @@
 
 import os
 import mlflow
-import joblib
 from dotenv import load_dotenv
 from src.logger import logging
 from from_root import from_root
-from src.components.feature_extraction import FeatureExtractor
-from src.components.data_preprocessing import DataPreprocessor
 from src.components.model_training import ModelTrainer
 from src.components.model_evaluation import ModelEvaluator
 
@@ -19,20 +16,6 @@ os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("MLFLOW_TRACKING_USERNAME")
 os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("MLFLOW_TRACKING_PASSWORD")
 mlflow.set_tracking_uri(os.getenv("DAGS_HUB_URI"))
 mlflow.set_experiment(os.getenv("MLFLOW_EXPERIMENT_NAME", "Accent Recognition"))
-
-def run_feature_extraction():
-    data_dir = os.path.join(from_root(), "data", "raw")
-    output_csv = os.path.join(from_root(), "data", "processed", "features.csv")
-    logging.info("Starting feature extraction process.")
-    FeatureExtractor(sr=22050, duration=10).initialize_feature_extractor(data_dir, output_csv)
-    logging.info("Feature extraction completed successfully.")
-
-def run_data_preprocessing():
-    input_csv = os.path.join(from_root(), "data", "processed", "features.csv")
-    output_dir = os.path.join(from_root(), "data", "preprocessed")
-    logging.info("Starting data preprocessing...")
-    DataPreprocessor(input_csv=input_csv, output_dir=output_dir).initiate_data_preprocessing()
-    logging.info("Data preprocessing finished.")
 
 def run_model_training():
     train_csv = os.path.join(from_root(), "data", "preprocessed", "train_data.csv")
@@ -53,8 +36,7 @@ def run_model_evaluation():
 # Entry Point
 if __name__ == "__main__":
     try:
-        run_feature_extraction()
-        run_data_preprocessing()
+      
         model, model_name, model_params = run_model_training()
         metrics, y_pred, y_true = run_model_evaluation()
 
