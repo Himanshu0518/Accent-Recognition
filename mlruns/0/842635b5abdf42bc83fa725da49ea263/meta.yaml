@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/hs787/OneDrive/Desktop/MLOPS/Accent-Recognition/mlruns/0/842635b5abdf42bc83fa725da49ea263/artifacts
+end_time: 1751210312394
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 842635b5abdf42bc83fa725da49ea263
+run_name: flawless-quail-566
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1751210303979
+status: 3
+tags: []
+user_id: hs787

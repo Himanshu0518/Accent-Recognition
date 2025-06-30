@@ -2,3 +2,5 @@
     remote = localremote
 ['remote "localremote"']
     url = ../dvcstore
+['remote "origin"']
+    url = https://dagshub.com/Himanshu0518/Accent-Recognition.dvc

@@ -26,3 +26,6 @@ joblib
 # Optional - for visualizing MFCCs and audio
 jupyter
 ipython
+
+# experiment tracking
+mlflow 

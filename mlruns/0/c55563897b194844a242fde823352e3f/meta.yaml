@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/hs787/OneDrive/Desktop/MLOPS/Accent-Recognition/mlruns/0/c55563897b194844a242fde823352e3f/artifacts
+end_time: 1751209454570
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: c55563897b194844a242fde823352e3f
+run_name: nosy-wasp-699
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1751209444084
+status: 3
+tags: []
+user_id: hs787

@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/hs787/OneDrive/Desktop/MLOPS/Accent-Recognition/mlruns/0/models/m-5904943715e44b3f808776dd7508e60d/artifacts
+creation_timestamp: 1751209444258
+experiment_id: '0'
+last_updated_timestamp: 1751209453979
+model_id: m-5904943715e44b3f808776dd7508e60d
+model_type: null
+name: model
+source_run_id: c55563897b194844a242fde823352e3f
+status: 2
+status_message: null
