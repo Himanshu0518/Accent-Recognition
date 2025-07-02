@@ -36,3 +36,4 @@ stages:
       - src/pipeline/training_pipeline.py
       - models/model.joblib
       - reports/metrics.yaml
+      - params.yaml

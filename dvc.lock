@@ -34,16 +34,20 @@ stages:
     deps:
     - path: models/model.joblib
       hash: md5
-      md5: 32166ea70145c3b1a0282746c57b2c09
-      size: 1663
+      md5: 2906e863c06dc65872dc9ddebc2139dd
+      size: 271233
+    - path: params.yaml
+      hash: md5
+      md5: 9d283b0aeb3d2ac870d9eb46c82382df
+      size: 151
     - path: reports/metrics.yaml
       hash: md5
-      md5: b2de0ae0e7f59a9755403005376d4506
+      md5: 2d0687d25edf6e88cdaa0f46387aba4d
       size: 69
     - path: src/pipeline/training_pipeline.py
       hash: md5
-      md5: c566cb17e49c4245236d5d2ce17304c2
-      size: 3658
+      md5: 2d2762b4271e8e1729cfd149f3476449
+      size: 2932
   model_evaluation:
     cmd: python -m src.components.model_evaluation
     deps:

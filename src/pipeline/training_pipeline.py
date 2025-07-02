@@ -7,15 +7,15 @@ from src.logger import logging
 from from_root import from_root
 from src.components.model_training import ModelTrainer
 from src.components.model_evaluation import ModelEvaluator
-
+from src.components.visualization import log_confusion_matrix, log_learning_curve
+import numpy as np
+import dagshub
 # Load environment variables
-load_dotenv()
 
 # Set MLflow/DagsHub tracking URI and credentials
-os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("MLFLOW_TRACKING_USERNAME")
-os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("MLFLOW_TRACKING_PASSWORD")
-mlflow.set_tracking_uri(os.getenv("DAGS_HUB_URI"))
-mlflow.set_experiment(os.getenv("MLFLOW_EXPERIMENT_NAME", "Accent Recognition"))
+
+dagshub.init(repo_owner='Himanshu0518', repo_name='Accent-Recognition', mlflow=True)
+mlflow.set_experiment("Accent Recognition")
 
 def run_model_training():
     train_csv = os.path.join(from_root(), "data", "preprocessed", "train_data.csv")
@@ -51,7 +51,10 @@ if __name__ == "__main__":
                 mlflow.log_metric(key, value)
 
             model_artifact_path = os.path.join(from_root(), "models", "model.joblib")
-            
+            log_confusion_matrix(y_true, y_pred, labels=np.unique(y_true))
+            train_path = os.path.join(from_root(), "data", "preprocessed", "train_data.csv")
+            log_learning_curve(model, train_csv=train_path, target_col="label")  # Replace "label" if needed
+
 
             try:
                 import mlflow.sklearn
