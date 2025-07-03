@@ -1,46 +1,49 @@
-# src/components/feature_extraction.py
-
+import os
 import librosa
 import numpy as np
 import pandas as pd
-from tqdm import tqdm
-import os
+from src.components.feature_extraction import FeatureExtractor
+from src.utils.main_utils import load_object
+from from_root import from_root
+from src.logger import logging
+from src.constants import ARTIFACT_DIR
 
-class FeatureExtractor:
-    def __init__(self, sr=22050, duration=10):
-        self.sr = sr
-        self.duration = duration
+class AudioPredictor:
+    def __init__(self, model_path=None, preprocessor_path=None):
+        try:
+            self.model_path = model_path or os.path.join(from_root(), "models", "model.joblib")
+            self.preprocessor_path = preprocessor_path or os.path.join(ARTIFACT_DIR, "preprocessor.joblib")
+            self.label_encoder_path = os.path.join(ARTIFACT_DIR, "label_encoder.joblib")
+            self.label_encoder = load_object(self.label_encoder_path)
+            self.model = load_object(self.model_path)
+            self.preprocessor = load_object(self.preprocessor_path)
+            self.fe = FeatureExtractor()
+            
+            logging.info("AudioPredictor initialized successfully.")
+        except Exception as e:
+            logging.error(f"Initialization failed: {e}")
+            raise
 
-    def extract_features(self, file_path):
-        y, sr = librosa.load(file_path, sr=self.sr, duration=self.duration)
+    def predict(self, audio_path):
+        try:
+            features = self.fe.extract_features(audio_path)
 
-        mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
-        zcr = librosa.feature.zero_crossing_rate(y)
-        rmse = librosa.feature.rms(y=y)
-        centroid = librosa.feature.spectral_centroid(y=y, sr=sr)
-        bandwidth = librosa.feature.spectral_bandwidth(y=y, sr=sr)
+            if features is None:
+                raise ValueError("No features extracted from the audio file.")
 
-        features = np.concatenate([
-            np.mean(mfcc, axis=1), np.std(mfcc, axis=1),
-            [np.mean(zcr), np.mean(rmse), np.mean(centroid), np.mean(bandwidth)]
-        ])
-        return features
+            # Define column names same as used during training
+            columns = [f"mfcc_{i+1}" for i in range(13)] + ["zcr", "rmse"]
+            features_df = pd.DataFrame([features], columns=columns)
 
-    def process_dataset(self, metadata_csv, data_dir, output_csv):
-        df = pd.read_csv(metadata_csv)
-        feature_list = []
-        label_list = []
+            logging.info(f"Extracted features: {features_df.shape}, Columns: {features_df.columns.tolist()}")
+            transformed_features = self.preprocessor.transform(features_df)
+            prediction = self.model.predict(transformed_features)
+         
+            logging.info(f"Prediction: {prediction[0]}")
 
-        for _, row in tqdm(df.iterrows(), total=len(df)):
-            try:
-                path = os.path.join(data_dir, row['filepath'])
-                features = self.extract_features(path)
-                feature_list.append(features)
-                label_list.append(row['label'])
-            except Exception as e:
-                print(f"Error in file {row['filepath']}: {e}")
+            decoded_label = self.label_encoder.inverse_transform([prediction])[0]
+            return decoded_label  # Return the decoded label directly
 
-        X = pd.DataFrame(feature_list)
-        X['label'] = label_list
-        X.to_csv(output_csv, index=False)
-        print(f"✅ Saved extracted features to {output_csv}")
+        except Exception as e:
+            logging.error(f"Prediction failed: {e}")
+            return None  # Return None instead of crashing

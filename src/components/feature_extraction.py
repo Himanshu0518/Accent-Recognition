@@ -8,14 +8,15 @@ from tqdm import tqdm
 from src.logger import logging
 from from_root import from_root
 from src.utils.main_utils import save_dataframe
-
+from src.constants import *
+from src.constants import * 
 
 class FeatureExtractor:
-    def __init__(self, sr=22050, duration=10):
+    def __init__(self, sr=SAMPLE_RATE, duration=DURATION):
         self.sr = sr
         self.duration = duration
-        self.FRAME_LENGTH = 1024
-        self.HOP_LENGTH = 512
+        self.FRAME_LENGTH = FRAME_LENGTH
+        self.HOP_LENGTH = HOP_LENGTH
         logging.info(f"[INIT] FeatureExtractor initialized with sr={sr}, duration={duration}")
 
     def extract_features(self, audio_path):
@@ -27,8 +28,7 @@ class FeatureExtractor:
                 y = np.pad(y, (0, 2048 - len(y)), mode='constant')
                 logging.debug(f"[PAD] Audio padded: {audio_path}")
 
-            # Feature extraction
-            mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13,
+            mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=MFCC_COUNT,
                                          hop_length=self.HOP_LENGTH, n_fft=self.FRAME_LENGTH)
             zcr = librosa.feature.zero_crossing_rate(y, frame_length=self.FRAME_LENGTH,
                                                      hop_length=self.HOP_LENGTH)[0]
@@ -50,15 +50,11 @@ class FeatureExtractor:
         feature_list = []
         labels = []
 
-        logging.info("🚀 Starting feature extraction for all audio files...")
+        logging.info("Starting feature extraction for all audio files...")
 
         try:
-            for i in tqdm(range(90), desc="🔍 Extracting features"):
-                for accent, label in [
-                    ("indian_accent", "indian"),
-                    ("american_accent", "american"),
-                    ("british_accent", "british")
-                ]:
+            for i in tqdm(range(NUM_FILES), desc="🔍 Extracting features"):
+                for accent, label in LABELS.items():
                     try:
                         file_path = os.path.join(from_root(), data_dir, f"{accent}/{accent}_{i}.wav")
 
@@ -79,11 +75,10 @@ class FeatureExtractor:
                         continue
 
             if not feature_list:
-                logging.critical("❌ No features extracted. Please check paths or data.")
+                logging.critical("No features extracted. Please check paths or data.")
                 return
 
-            # Build DataFrame
-            mfcc_columns = [f"mfcc_{i+1}" for i in range(13)]
+            mfcc_columns = [f"mfcc_{i+1}" for i in range(MFCC_COUNT)]
             columns = mfcc_columns + ["zcr", "rmse"]
             df = pd.DataFrame(feature_list, columns=columns)
             df["label"] = labels
@@ -94,11 +89,12 @@ class FeatureExtractor:
         except Exception as outer_e:
             logging.critical(f"[CRITICAL] Feature extraction failed entirely: {outer_e}")
 
+
 if __name__ == "__main__":
-    data_dir = os.path.join(from_root(), "data/raw")
-    output_csv = os.path.join(from_root(), "data/interim/features.csv")
+    data_dir = RAW_DATA_DIR
+    output_csv = FEATURES_CSV
 
     logging.info("Starting feature extraction process.")
-    feature_extractor = FeatureExtractor(sr=22050, duration=10)
+    feature_extractor = FeatureExtractor()
     feature_extractor.initialize_feature_extractor(data_dir, output_csv)
     logging.info("Feature extraction completed successfully.")

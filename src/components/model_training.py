@@ -4,10 +4,10 @@ from src.logger import logging
 from src.utils.main_utils import load_dataframe, read_yaml, save_object
 from sklearn.base import ClassifierMixin
 from sklearn.utils import all_estimators
-
+from src.constants import *
 
 class ModelTrainer:
-    def __init__(self, model_path= f"models/model.joblib"):
+    def __init__(self, model_path= MODEL_PATH):
         self.model_path = os.path.join(from_root(), model_path)
 
     def _get_model_instance(self, model_name: str, model_params: dict) -> ClassifierMixin:

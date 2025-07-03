@@ -13,22 +13,7 @@ stages:
       - data/interim/features.csv
     outs:
       - data/preprocessed
-
-  # model_training:
-  #   cmd: python -m src.components.model_training
-  #   deps:
-  #     - src/components/model_training.py
-  #     - data/preprocessed
-  #   outs:
-  #     - models/model.joblib
-
-  # model_evaluation:
-  #   cmd: python -m src.components.model_evaluation
-  #   deps:
-  #     - src/components/model_evaluation.py
-  #     - models/model.joblib
-  #   outs:
-  #     - reports/metrics.yaml
+      - artifacts
 
   model_training:
     cmd: python -m src.pipeline.training_pipeline

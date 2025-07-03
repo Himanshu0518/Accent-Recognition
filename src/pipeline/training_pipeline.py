@@ -2,7 +2,6 @@
 
 import os
 import mlflow
-from dotenv import load_dotenv
 from src.logger import logging
 from from_root import from_root
 from src.components.model_training import ModelTrainer
@@ -10,7 +9,8 @@ from src.components.model_evaluation import ModelEvaluator
 from src.components.visualization import log_confusion_matrix, log_learning_curve
 import numpy as np
 import dagshub
-# Load environment variables
+from src.constants import *
+
 
 # Set MLflow/DagsHub tracking URI and credentials
 
@@ -20,7 +20,7 @@ mlflow.set_experiment("Accent Recognition")
 def run_model_training():
     train_csv = os.path.join(from_root(), "data", "preprocessed", "train_data.csv")
     logging.info("Starting model training...")
-    trainer = ModelTrainer(model_path="models/model.joblib")
+    trainer = ModelTrainer(model_path=MODEL_PATH)
     model, model_name, model_params = trainer.initiate_model_training(train_csv)
     logging.info("Model training completed.")
     return model, model_name, model_params
@@ -28,7 +28,7 @@ def run_model_training():
 def run_model_evaluation():
     test_csv = os.path.join(from_root(), "data", "preprocessed", "test_data.csv")
     logging.info("Starting model evaluation...")
-    evaluator = ModelEvaluator(model_path="models/model.joblib")
+    evaluator = ModelEvaluator(model_path=MODEL_PATH)
     metrics, y_pred, y_true = evaluator.initiate_model_evaluation(test_csv)
     logging.info("Model evaluation completed.")
     return metrics, y_pred, y_true
@@ -50,18 +50,16 @@ if __name__ == "__main__":
             for key, value in metrics.items():
                 mlflow.log_metric(key, value)
 
-            model_artifact_path = os.path.join(from_root(), "models", "model.joblib")
             log_confusion_matrix(y_true, y_pred, labels=np.unique(y_true))
-            train_path = os.path.join(from_root(), "data", "preprocessed", "train_data.csv")
-            log_learning_curve(model, train_csv=train_path, target_col="label")  # Replace "label" if needed
-
+           
+            log_learning_curve(model, train_csv= TRAIN_DATA, target_col="label")  
 
             try:
                 import mlflow.sklearn
-                mlflow.sklearn.log_model(model,artifact_path="model", registered_model_name=model_name)
+                mlflow.sklearn.log_model(model,artifact_path="model")
                 logging.info("Model logged using mlflow.sklearn.")
             except Exception as e:
-                mlflow.log_artifact(model_artifact_path, artifact_path="model")
+                mlflow.log_artifact(MODEL_PATH, artifact_path="model")
                 logging.warning(f"Could not use mlflow.sklearn. Used log_artifact instead. Reason: {e}")
 
             logging.info("All parameters, metrics, and model logged to MLflow.")

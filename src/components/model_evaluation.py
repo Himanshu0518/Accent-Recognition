@@ -3,11 +3,12 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from src.utils.main_utils import load_dataframe, load_object, write_yaml
 from src.logger import logging
 from from_root import from_root
+from src.constants import *
 
 class ModelEvaluator:
-    def __init__(self, model_path="models/model.joblib"):
-        self.model_path = os.path.join(from_root(), model_path)
-        self.metrics_path = os.path.join(from_root(), "reports", "metrics.yaml")
+    def __init__(self, model_path=MODEL_PATH):
+        self.model_path = model_path
+        self.metrics_path = METRICS_PATH
         os.makedirs(os.path.dirname(self.metrics_path), exist_ok=True)
 
     def initiate_model_evaluation(self, test_csv: str):

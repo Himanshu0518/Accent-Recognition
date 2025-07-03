@@ -2,3 +2,5 @@
     remote = origin
 ['remote "origin"']
     url = https://dagshub.com/Himanshu0518/Accent-Recognition.dvc
+    auth = basic
+    user = Himanshu0518
