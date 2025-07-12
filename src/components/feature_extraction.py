@@ -5,15 +5,13 @@ import pandas as pd
 import librosa
 import os
 from tqdm import tqdm
-from ast import literal_eval
 from src.logger import logging
-from from_root import from_root
 from src.constants import *
 from src.utils.main_utils import save_dataframe
 from src.components.data_augmentation import DataAugmentor
 
 
-class FeatureExtractorFromCSV:
+class FeatureExtractor:
     def __init__(self, sr=SAMPLE_RATE):
         self.sr = sr
         self.frame_length = FRAME_LENGTH
@@ -41,7 +39,7 @@ class FeatureExtractorFromCSV:
         features_list = []
         labels = []
         
-        logging.info("🔍 Starting feature extraction from samples...")
+        logging.info("Starting feature extraction from samples...")
         da = DataAugmentor(self.sr, self.duration) 
         try:
             for i in tqdm(range(NUM_FILES), desc="🔊 Augmenting"):
@@ -85,7 +83,7 @@ class FeatureExtractorFromCSV:
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    extractor = FeatureExtractorFromCSV()
+    extractor = FeatureExtractor()
     extractor.initiate_featur_extraction_pipeline(
         data_dir=RAW_DATA_DIR,
         output_csv_path=os.path.join(INTERIM_DATA_DIR, "features.csv")
