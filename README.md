@@ -74,7 +74,7 @@ etc
 ```
   
 
-📊 Features Extracted
+### 📊 Features Extracted
 From each audio file, we extract:
 
 MFCCs (13 coefficients) — Mel Frequency Cepstral Coefficients
@@ -83,7 +83,8 @@ ZCR — Zero Crossing Rate
 
 RMSE — Root Mean Square Energy
 
-🔄 Audio Augmentation
+
+### 🔄 Audio Augmentation
 
 To improve model generalization, we apply:
 
@@ -95,7 +96,8 @@ To improve model generalization, we apply:
 
 This ensures robustness to variations in speech.
 
-🤖 Model Training
+
+### 🤖 Model Training
 
 Models Compared:
 
@@ -115,7 +117,7 @@ Final Model: Logistic Regression
 
 Test Accuracy: ~96%
 
-📦 Version Control with DVC
+### 📦 Version Control with DVC
 
 used DVC to version:
 
@@ -131,7 +133,7 @@ dvc add data/raw
 dvc repro
 ```
 
-🌐 Web App Interface (Streamlit)
+### 🌐 Web App Interface (Streamlit)
 
 Upload a .wav audio
 
@@ -142,7 +144,7 @@ View predicted accent + confidence
 Works on local or remote deployment
 
 
-📈 Future Enhancements (Optional)
+### 📈 Future Enhancements (Optional)
 
 🔉 Add accent conversion via TTS for demo/playback
 
