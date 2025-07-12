@@ -167,10 +167,15 @@ streamlit run app.py
 ```
 
 👨‍💻 Author
+
 Himanshu Singh
+
 Second-Year B.Tech ECE @ IIIT Una
+
 GitHub: [@Himanshu0518](https://github.com/Himanshu0518)
+
 DagsHub: [@himanshu0518](https://dagshub.com/Himanshu0518)
+
 
 ### 📊 MLflow Tracking
 
