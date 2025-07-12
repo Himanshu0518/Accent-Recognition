@@ -170,7 +170,7 @@ streamlit run app.py
 
 Himanshu Singh
 
-Second-Year B.Tech ECE @ IIIT Una
+Prefinal - year  B.Tech ECE  student @ IIIT Una
 
 GitHub: [@Himanshu0518](https://github.com/Himanshu0518)
 
