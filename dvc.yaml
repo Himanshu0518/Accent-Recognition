@@ -1,7 +1,8 @@
 stages:
+
   feature_extraction:
     cmd: python -m src.components.feature_extraction
-    deps:
+    deps:    
       - src/components/feature_extraction.py
     outs:
       - data/interim/features.csv
@@ -18,7 +19,10 @@ stages:
   model_training:
     cmd: python -m src.pipeline.training_pipeline
     deps:
+      - data/preprocessed/train_data.csv
+      - data/preprocessed/test_data.csv
       - src/pipeline/training_pipeline.py
+      - params.yaml
+    outs:
       - models/model.joblib
       - reports/metrics.yaml
-      - params.yaml

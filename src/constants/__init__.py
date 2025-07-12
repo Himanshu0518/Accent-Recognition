@@ -1,6 +1,7 @@
 import os
 from from_root import from_root
 
+
 # Feature extraction constants 
 
 
@@ -22,6 +23,8 @@ LABELS = {
 
 RAW_DATA_DIR = os.path.join(from_root(), "data", "raw")
 PREPROCESSED_DATA_DIR = os.path.join(from_root(), "data", "preprocessed")
+INTERIM_DATA_DIR = os.path.join(from_root(), "data", "interim")
+DATA_AUGMENTED_DIR = os.path.join(from_root(),"data","augmented_data")
 
 # Data Preprocessing constants
 

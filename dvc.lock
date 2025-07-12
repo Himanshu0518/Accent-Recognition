@@ -5,20 +5,20 @@ stages:
     deps:
     - path: src/components/feature_extraction.py
       hash: md5
-      md5: f7f52daffb4d387b324cd48a63c1f024
-      size: 4033
+      md5: c77466aefba8ab3c7d13493a3c3812c6
+      size: 3504
     outs:
     - path: data/interim/features.csv
       hash: md5
-      md5: 8c6ba8089d69ab662c3877581e03494b
-      size: 34466
+      md5: dc79e04e170a2f33e99bf2e5a1c5ef3b
+      size: 267034
   data_preprocessing:
     cmd: python -m src.components.data_preprocessing
     deps:
     - path: data/interim/features.csv
       hash: md5
-      md5: 8c6ba8089d69ab662c3877581e03494b
-      size: 34466
+      md5: dc79e04e170a2f33e99bf2e5a1c5ef3b
+      size: 267034
     - path: src/components/data_preprocessing.py
       hash: md5
       md5: 8922d510b962ab6613df9629e4f98e87
@@ -26,33 +26,42 @@ stages:
     outs:
     - path: artifacts
       hash: md5
-      md5: 0efe074fe53dfe8e3f6434ca0c0590c7.dir
-      size: 3181
+      md5: 03e0cca8c1a824525bf252e02133e9fd.dir
+      size: 3101
       nfiles: 2
     - path: data/preprocessed
       hash: md5
-      md5: f58ad0f904db79ec657948f0a890c78a.dir
-      size: 58789
+      md5: c32e94974a1c8781810c34bbd911f852.dir
+      size: 276702
       nfiles: 2
   model_training:
     cmd: python -m src.pipeline.training_pipeline
     deps:
-    - path: models/model.joblib
+    - path: data/preprocessed/test_data.csv
       hash: md5
-      md5: 7e1b96e7b591d6715c57c4628bcfaeac
-      size: 262961
+      md5: 1f2f822803889806eda0201e2d308f4e
+      size: 55538
+    - path: data/preprocessed/train_data.csv
+      hash: md5
+      md5: 78a887d80f841424c7ecef7b10ace026
+      size: 221164
     - path: params.yaml
       hash: md5
-      md5: 9d283b0aeb3d2ac870d9eb46c82382df
-      size: 151
-    - path: reports/metrics.yaml
-      hash: md5
-      md5: 48c851967247ad557f395a8b23a03cd8
-      size: 67
+      md5: 4adb1fab8466436c17cc7635c3e8fc36
+      size: 145
     - path: src/pipeline/training_pipeline.py
       hash: md5
       md5: f3769bd2b263d279e44eb07a560de80b
       size: 2640
+    outs:
+    - path: models/model.joblib
+      hash: md5
+      md5: c5e3511ea9f15d6a59e906c3b561a63e
+      size: 1663
+    - path: reports/metrics.yaml
+      hash: md5
+      md5: 28c6ba13c8a662faffd0f1867a678720
+      size: 71
   model_evaluation:
     cmd: python -m src.components.model_evaluation
     deps:
@@ -84,3 +93,20 @@ stages:
       hash: md5
       md5: 8fd675ad082b8a8c3ed16333ea6dc20f
       size: 3694
+  data_augmentation:
+    cmd: python -m src.components.data_augmentation
+    deps:
+    - path: data/raw
+      hash: md5
+      md5: fa5055fd03d2f1fa5e65f292727a6239.dir
+      size: 407502174
+      nfiles: 233
+    - path: src/components/data_augmentation.py
+      hash: md5
+      md5: e0c85ad4d26084073a2a3c7e55975a5a
+      size: 3082
+    outs:
+    - path: data/augmented_data/augmented_data.csv
+      hash: md5
+      md5: 98dd1676494c99d9efa377dbe0a82b50
+      size: 4362172872

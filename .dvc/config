@@ -1,5 +1,6 @@
 [core]
     remote = origin
+    autostage = true
 ['remote "origin"']
     url = https://dagshub.com/Himanshu0518/Accent-Recognition.dvc
     auth = basic
