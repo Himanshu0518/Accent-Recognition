@@ -1,31 +1,43 @@
+# ----------------------
 # Core Libraries
-numpy
-pandas
-scikit-learn
-matplotlib
-seaborn
+# ----------------------
+numpy==1.24.4
+pandas==1.5.3
+scikit-learn==1.2.2
+joblib==1.2.0
+tqdm==4.65.0
 
+# ----------------------
 # Audio Processing
+# ----------------------
 librosa==0.10.1
-pydub
-soundfile  # Required by librosa for reading/writing wav
+pydub==0.25.1
+soundfile==0.12.1  # required by librosa
 
-# Deep Learning
-tensorflow==2.14.0  
-
+# ----------------------
 # Experiment Tracking
+# ----------------------
 dvc==3.44.0
+mlflow==2.11.3
 
-# Web App (optional)
-flask
+# ----------------------
+# Web App
+# ----------------------
+streamlit==1.33.0  # tested and stable
 
-# Utilities
-tqdm
-joblib
+# ----------------------
+# Visualization (optional)
+# ----------------------
+matplotlib==3.7.3  # compatible with librosa and streamlit
+seaborn==0.12.2
 
-# Optional - for visualizing MFCCs and audio
-jupyter
-ipython
+# ----------------------
+# Dev Tools (optional)
+# ----------------------
+jupyter==1.0.0
+ipython==8.12.3
 
-# experiment tracking
-mlflow 
+# ----------------------
+# Optional: Env Management
+# ----------------------
+python-dotenv==1.0.1

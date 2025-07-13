@@ -52,3 +52,4 @@ def log_learning_curve(model, train_csv, target_col="label"):
         logging.info("Learning curve saved and logged to MLflow.")
     except Exception as e:
         logging.warning(f"Could not log learning curve: {e}")
+

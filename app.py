@@ -1,71 +1,102 @@
+# streamlit_app.py
+
 import streamlit as st
 import tempfile
-import os
 import librosa
-import librosa.display
-import matplotlib.pyplot as plt
 import numpy as np
 from src.pipeline.prediction_pipeline import AudioPredictor
+from visualizer import (
+    plot_waveform, plot_mel_spectrogram, plot_zcr, plot_rmse, plot_feature_importance
+)
+
+DAGSHUB_TRACKING_URL = "https://dagshub.com/Himanshu0518/Accent-Recognition.mlflow"
 
 st.set_page_config(page_title="Accent Recognition", layout="centered")
-st.title("🗣️ Accent Recognition")
+st.markdown("<h1 style='text-align: center;'>🗣️ Accent Recognition App</h1>", unsafe_allow_html=True)
 
-st.markdown("Upload a `.wav` file of speech, and this app will predict the **accent**.")
+st.markdown("""
+<div style='text-align: center;'>
+    Upload a <code>.wav</code> file of speech and this app will predict the speaker's <b>accent</b>.
+</div>
+""", unsafe_allow_html=True)
 
+st.divider()
 predictor = AudioPredictor()
 
-uploaded_file = st.file_uploader("📤 Upload your WAV file", type=["wav"])
+# Upload
+st.subheader("📤 Upload Your Audio File")
+uploaded_file = st.file_uploader("Choose a `.wav` file", type=["wav"])
 
 if uploaded_file:
-    # Display audio player
     st.audio(uploaded_file, format="audio/wav")
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
         tmp.write(uploaded_file.read())
         tmp_path = tmp.name
 
-    # Show waveform and spectrogram
     try:
         y, sr = librosa.load(tmp_path, sr=None)
-        fig1, ax = plt.subplots()
-        librosa.display.waveshow(y, sr=sr, ax=ax)
-        ax.set_title("Waveform")
-        st.pyplot(fig1)
 
-        fig2, ax2 = plt.subplots()
-        S = librosa.feature.melspectrogram(y, sr=sr)
-        S_dB = librosa.power_to_db(S, ref=np.max)
-        img = librosa.display.specshow(S_dB, sr=sr, ax=ax2, x_axis='time', y_axis='mel')
-        ax2.set_title("Mel Spectrogram")
-        fig2.colorbar(img, ax=ax2, format="%+2.0f dB")
-        st.pyplot(fig2)
+        # Dropdown for visualizations
+        st.subheader("📊 Visualize Features")
+        viz_option = st.selectbox(
+            "Choose visualization type",
+            ["Waveform", "Mel Spectrogram", "Zero Crossing Rate (ZCR)", "RMSE"]
+        )
+
+        if viz_option == "Waveform":
+            st.pyplot(plot_waveform(y, sr))
+        elif viz_option == "Mel Spectrogram":
+            st.pyplot(plot_mel_spectrogram(y, sr))
+        elif viz_option == "Zero Crossing Rate (ZCR)":
+            st.pyplot(plot_zcr(y))
+        elif viz_option == "RMSE":
+            st.pyplot(plot_rmse(y))
 
     except Exception as e:
-        st.warning(f"Could not display audio visualizations: {e}")
+        st.warning(f"⚠️ Could not display visualizations: {e}")
 
-    # Predict button
-    if st.button("🎯 Predict Accent"):
+    # Prediction
+    st.subheader("🎯 Predict Accent")
+    if st.button("🔍 Run Prediction"):
         try:
             result = predictor.predict(tmp_path)
 
             if isinstance(result, dict):
-                # If result contains probabilities
                 st.success(f"Predicted Accent: **{max(result, key=result.get).capitalize()}**")
                 st.subheader("Prediction Confidence")
                 st.bar_chart(result)
+
+                # Example feature importance
+                st.subheader("🧠 Feature Importance (Example)")
+                feature_importance = {
+                    "MFCC": 0.35,
+                    "ZCR": 0.2,
+                    "RMSE": 0.15,
+                    "Chroma": 0.1,
+                    "Spectral Centroid": 0.2
+                }
+                st.pyplot(plot_feature_importance(feature_importance))
+
             else:
                 st.success(f"Predicted Accent: **{result.capitalize()}**")
 
         except Exception as e:
             st.error(f"Prediction failed: {e}")
-            st.warning("Ensure the audio file is in WAV format and contains clear speech.")
+            st.warning("Ensure the audio is clear and in correct format (.wav)")
 
-# Optional: Explain the pipeline
+st.divider()
+
 with st.expander("📌 How This Works"):
     st.markdown("""
-    - ✅ The audio is **preprocessed** to extract features like MFCCs, Zero-Crossing Rate, and Energy.
-    - 🔊 We apply **augmentation techniques** (noise, pitch shift, stretch) to improve robustness.
+    - ✅ Audio is **preprocessed** to extract features like MFCCs, Zero-Crossing Rate, and Energy.
+    - 🔊 We apply **augmentation techniques** (noise, pitch shift, stretch) for robustness.
     - 🧠 A trained **machine learning model** (e.g., Logistic Regression) predicts the accent.
-    - 📦 The entire pipeline is tracked and versioned using **DVC & Git** for reproducibility.
+    - 📦 Entire pipeline is tracked and versioned using **DVC & Git** for reproducibility.
     """)
 
+st.markdown("### 📈 MLflow Experiment Tracking")
+st.markdown(f"[🔗 View on DagsHub]({DAGSHUB_TRACKING_URL})", unsafe_allow_html=True)
+
+st.markdown("---")
+st.markdown("<div style='text-align: center; font-size: small;'>Built with ❤️ using Streamlit | Project Tracked via DagsHub</div>", unsafe_allow_html=True)

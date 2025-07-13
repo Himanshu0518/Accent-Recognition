@@ -45,7 +45,7 @@ class AudioPredictor:
          
             logging.info(f"Prediction: {prediction[0]}")
 
-            decoded_label = self.label_encoder.inverse_transform([prediction])[0]
+            decoded_label = self.label_encoder.inverse_transform(np.ravel(prediction))[0]
             return decoded_label  
 
         except Exception as e:
