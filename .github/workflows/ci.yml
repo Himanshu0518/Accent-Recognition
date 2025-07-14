@@ -26,4 +26,4 @@ jobs:
         
 
     - name: Run tests
-      run: pytest tests/test_audio_predictor_simple.py -v
+      run: pytest tests/test_audio_predictor.py -v
