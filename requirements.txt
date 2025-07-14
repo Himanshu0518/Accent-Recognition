@@ -37,3 +37,7 @@ ipython==8.37.0
 python-dotenv==1.1.1
 
 PyYAML==6.0.2  # for configuration management
+
+pytest>=8.0
+  
+pytest-mock==3.10.0  # for mocking in tests
