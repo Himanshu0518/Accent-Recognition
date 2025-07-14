@@ -9,6 +9,7 @@ from src.components.model_evaluation import ModelEvaluator
 from src.components.visualization import log_confusion_matrix, log_learning_curve
 import numpy as np
 import dagshub
+import mlflow.sklearn
 from src.constants import *
 
 
@@ -54,8 +55,7 @@ if __name__ == "__main__":
            
             log_learning_curve(model, train_csv= TRAIN_DATA, target_col="label")  
 
-            try:
-                import mlflow.sklearn
+            try: 
                 mlflow.sklearn.log_model(model,artifact_path="model")
                 logging.info("Model logged using mlflow.sklearn.")
             except Exception as e:

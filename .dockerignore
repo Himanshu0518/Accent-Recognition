@@ -1,0 +1,58 @@
+# Bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Notebooks (optional)
+*.ipynb
+Notebooks/
+
+# Ignore large datasets — unless needed at runtime
+*.csv
+*.tsv
+*.xlsx
+*.h5
+*.npy
+data/
+
+# Keep these if your app loads them
+# DO NOT IGNORE if model or config is .pkl or .json
+# *.pkl
+# *.json
+
+# DVC / MLflow
+.mlflow/
+.dvc/
+dvc.lock
+*.dvc
+.cache/
+
+
+# Streamlit/temp files
+*.db
+*.log
+tmp/
+temp/
+*.tmp
+
+# OS & IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git files
+.git/
+.gitignore
+
+# MLflow local runs directory
+mlruns/
+
+# Custom logs or tracking files
+logs/
+README.md
+reports/
+WindowsPowerShell/
