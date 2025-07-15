@@ -13,7 +13,7 @@ HOP_LENGTH = 512          # Hop size for STFT
 
 NUM_FILES = 90            # Number of files per accent
 MFCC_COUNT = 13           # Number of MFCCs to extract
-ARTIFACT_DIR = os.path.join(from_root(), "artifacts")
+
 
 LABELS = {
     "indian_accent": "indian",
@@ -39,3 +39,5 @@ MODEL_PATH = os.path.join(from_root(), "models", "model.joblib")
 MODEL_DIR = os.path.join(from_root(), "models")
 METRICS_PATH = os.path.join(from_root(), "reports", "metrics.yaml")
 REPORTS_DIR = os.path.join(from_root(), "reports")
+
+MLFLOW_TRACKING_URI = "https://dagshub.com/Himanshu0518/Accent-Recognition.mlflow"

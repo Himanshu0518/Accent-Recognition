@@ -16,7 +16,7 @@ class DataPreprocessor:
         self.output_dir = output_dir
         self.test_size = test_size
         self.random_state = random_state
-        self.artifact_dir = ARTIFACT_DIR
+        self.artifact_dir = MODEL_DIR
         os.makedirs(self.output_dir, exist_ok=True)
     
     def label_encode(self, y):

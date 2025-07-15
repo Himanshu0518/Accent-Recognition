@@ -5,58 +5,53 @@ stages:
     deps:
     - path: src/components/feature_extraction.py
       hash: md5
-      md5: c77466aefba8ab3c7d13493a3c3812c6
-      size: 3504
+      md5: c4458edfd0a6b42a3dde3bc23e87b569
+      size: 3422
     outs:
     - path: data/interim/features.csv
       hash: md5
-      md5: dc79e04e170a2f33e99bf2e5a1c5ef3b
-      size: 267034
+      md5: 2d191f5c2ba44a422f240d9d61df09b6
+      size: 267065
   data_preprocessing:
     cmd: python -m src.components.data_preprocessing
     deps:
     - path: data/interim/features.csv
       hash: md5
-      md5: dc79e04e170a2f33e99bf2e5a1c5ef3b
-      size: 267034
+      md5: 2d191f5c2ba44a422f240d9d61df09b6
+      size: 267065
     - path: src/components/data_preprocessing.py
       hash: md5
-      md5: 8922d510b962ab6613df9629e4f98e87
-      size: 3596
+      md5: 22de6e189cfe4c73939890656032337d
+      size: 3593
     outs:
-    - path: artifacts
-      hash: md5
-      md5: 03e0cca8c1a824525bf252e02133e9fd.dir
-      size: 3101
-      nfiles: 2
     - path: data/preprocessed
       hash: md5
-      md5: c32e94974a1c8781810c34bbd911f852.dir
-      size: 276702
+      md5: 68a34a4c11a86702bc612b9368b404c4.dir
+      size: 276739
       nfiles: 2
   model_training:
     cmd: python -m src.pipeline.training_pipeline
     deps:
     - path: data/preprocessed/test_data.csv
       hash: md5
-      md5: 1f2f822803889806eda0201e2d308f4e
-      size: 55538
+      md5: d45c0d4ded6704752d3cfebf2109ab34
+      size: 55541
     - path: data/preprocessed/train_data.csv
       hash: md5
-      md5: 78a887d80f841424c7ecef7b10ace026
-      size: 221164
+      md5: 27130692ef924fb37ef60fe6e53d63e3
+      size: 221198
     - path: params.yaml
       hash: md5
       md5: 4adb1fab8466436c17cc7635c3e8fc36
       size: 145
     - path: src/pipeline/training_pipeline.py
       hash: md5
-      md5: f3769bd2b263d279e44eb07a560de80b
-      size: 2640
+      md5: 6f8704953328c63d30efcd0e0d95417d
+      size: 2913
     outs:
     - path: models/model.joblib
       hash: md5
-      md5: c5e3511ea9f15d6a59e906c3b561a63e
+      md5: e54c3030c7902945393248d6b4c41708
       size: 1663
     - path: reports/metrics.yaml
       hash: md5

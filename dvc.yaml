@@ -14,8 +14,7 @@ stages:
       - data/interim/features.csv
     outs:
       - data/preprocessed
-      - artifacts
-
+      
   model_training:
     cmd: python -m src.pipeline.training_pipeline
     deps:

@@ -11,7 +11,8 @@ import numpy as np
 import dagshub
 import mlflow.sklearn
 from src.constants import *
-
+from sklearn.pipeline import Pipeline
+from src.utils.main_utils import load_object
 
 # Set MLflow/DagsHub tracking URI and credentials
 
@@ -56,8 +57,12 @@ if __name__ == "__main__":
             log_learning_curve(model, train_csv= TRAIN_DATA, target_col="label")  
 
             try: 
-                mlflow.sklearn.log_model(model,artifact_path="model")
+                prepeocesser = load_object(os.path.join(MODEL_DIR, "preprocessor.joblib"))
+                final_model = Pipeline(steps=[('preprocessor', prepeocesser), ('classifier', model)])
+                mlflow.sklearn.log_model(final_model,artifact_path="model")
+
                 logging.info("Model logged using mlflow.sklearn.")
+
             except Exception as e:
                 mlflow.log_artifact(MODEL_PATH, artifact_path="model")
                 logging.warning(f"Could not use mlflow.sklearn. Used log_artifact instead. Reason: {e}")

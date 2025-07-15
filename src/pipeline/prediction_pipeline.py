@@ -2,52 +2,85 @@ import os
 import librosa
 import numpy as np
 import pandas as pd
+import mlflow
+import mlflow.pyfunc
+from src.constants import MLFLOW_TRACKING_URI
 from src.components.feature_extraction import FeatureExtractor
 from src.utils.main_utils import load_object
-from from_root import from_root
+from src.constants import SAMPLE_RATE, DURATION, MODEL_DIR
 from src.logger import logging
-from src.constants import ARTIFACT_DIR,SAMPLE_RATE, DURATION
+
+
+mlflow.set_tracking_uri(
+    MLFLOW_TRACKING_URI
+)
+
 
 class AudioPredictor:
-    def __init__(self):
+    """
+    Predicts speaker accent from an audio file by:
+      1. Loading a registered MLflow model (with preprocessing inside)
+      2. Extracting MFCC+ZCR+RMSE features from raw audio
+      3. Feeding features directly to the model
+      4. Decoding the predicted label with a saved label encoder
+    """
+
+    def __init__(self, model_version: str = "2"):
         try:
-            self.model_path = os.path.join(from_root(), "models", "model.joblib")
-            self.preprocessor_path =  os.path.join(ARTIFACT_DIR, "preprocessor.joblib")
-            self.label_encoder_path = os.path.join(ARTIFACT_DIR, "label_encoder.joblib")
-            self.label_encoder = load_object(self.label_encoder_path)
-            self.model = load_object(self.model_path)
-            self.preprocessor = load_object(self.preprocessor_path)
-            self.fe = FeatureExtractor()
-            
-            logging.info("AudioPredictor initialized successfully.")
-        except Exception as e:
-            logging.error(f"Initialization failed: {e}")
-            raise
-
-    def predict(self, audio_path):
-        try:
-            y, _ = librosa.load(audio_path, sr=SAMPLE_RATE, duration=DURATION)
-            if len(y) == 0:
-                raise ValueError("Audio file is empty or could not be loaded.")
-            
-            features = self.fe.extract_features(y)
-
-            if features is None:
-                raise ValueError("No features extracted from the audio file.")
-
-            # Define column names same as used during training
-            columns = [f"mfcc_{i+1}" for i in range(13)] + ["zcr", "rmse"]
-            features_df = pd.DataFrame([features], columns=columns)
+            # --- Load registered MLflow model ------------------------
+            self.model_uri = f"models:/AccentClassifier/{model_version}"
+            self.model = mlflow.pyfunc.PyFuncModel = mlflow.pyfunc.load_model(
+                self.model_uri
+            )
 
            
-            transformed_features = self.preprocessor.transform(features_df)
-            prediction = self.model.predict(transformed_features)
-         
-            logging.info(f"Prediction: {prediction[0]}")
+            self.label_encoder = load_object(
+                os.path.join(MODEL_DIR, "label_encoder.joblib")
+            )
+            self.fe = FeatureExtractor()
 
-            decoded_label = self.label_encoder.inverse_transform(np.ravel(prediction))[0]
-            return decoded_label  
+            logging.info("AudioPredictor initialised (model %s).", self.model_uri)
+        except Exception as exc:
+            logging.exception("Failed to initialise AudioPredictor: %s", exc)
+            raise
 
-        except Exception as e:
-            logging.error(f"Prediction failed: {e}")
-            return None  
+
+    def predict(self, audio_path: str) -> str | None:
+        """
+        Parameters
+        ----------
+        audio_path : str
+            Path to a .wav / .flac / .mp3 file.
+
+        Returns
+        -------
+        str | None
+            Predicted accent label, or None if prediction failed.
+        """
+        try:
+            # --- Load & trim/pad audio --------------------------------
+            y, _ = librosa.load(audio_path, sr=SAMPLE_RATE, duration=DURATION)
+            if y.size == 0:
+                raise ValueError("Audio file is empty or unreadable")
+
+            # --- Feature extraction -----------------------------------
+            features = self.fe.extract_features(y)
+            if features is None:
+                raise ValueError("Feature extractor returned None")
+
+            cols = [f"mfcc_{i+1}" for i in range(13)] + ["zcr", "rmse"]
+            X = pd.DataFrame([features], columns=cols)
+
+            # --- Inference (pre‑processing is inside model) -----------
+            y_pred = self.model.predict(X)
+            decoded = self.label_encoder.inverse_transform(np.ravel(y_pred))[0]
+
+            logging.info("Prediction complete: %s", decoded)
+            return decoded
+
+        except Exception as exc:
+            logging.exception("Prediction failed: %s", exc)
+            return None
+
+
+
