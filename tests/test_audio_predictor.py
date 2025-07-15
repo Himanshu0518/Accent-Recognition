@@ -9,7 +9,8 @@ from unittest.mock import MagicMock, patch
 @patch("src.pipeline.prediction_pipeline.librosa.load")
 @patch("src.pipeline.prediction_pipeline.FeatureExtractor")
 @patch("src.pipeline.prediction_pipeline.load_object")
-def test_predict_success(mock_load_object, mock_feature_extractor_cls, mock_librosa_load):
+@patch("src.pipeline.prediction_pipeline.mlflow.pyfunc.load_model")
+def test_predict_success(mock_mlflow_load_model, mock_load_object, mock_feature_extractor_cls, mock_librosa_load):
     """
     GIVEN a valid *fake* audio path
     WHEN  AudioPredictor.predict is called
@@ -28,21 +29,23 @@ def test_predict_success(mock_load_object, mock_feature_extractor_cls, mock_libr
     mock_fe_instance.extract_features.return_value = fake_features
     mock_feature_extractor_cls.return_value = mock_fe_instance
 
-    # 3) Mock objects returned by load_object()
-    #    We’ll decide which one to hand back based on the path suffix.
+    # 3) Mock model loaded by mlflow
     fake_model = MagicMock()
     fake_model.predict.return_value = np.array([0])
+    mock_mlflow_load_model.return_value = fake_model
 
+    # 4) Mock preprocessor
     fake_preprocessor = MagicMock()
     fake_preprocessor.transform.return_value = np.array([[0] * 15])
 
+    # 5) Mock label encoder
     class FakeLabelEncoder:
         def inverse_transform(self, arr):
             return np.array(["speech"])
 
     def _load_object_side_effect(path):
         if path.endswith("model.joblib"):
-            return fake_model
+            return fake_model  # not used, but good to cover
         if path.endswith("preprocessor.joblib"):
             return fake_preprocessor
         if path.endswith("label_encoder.joblib"):
@@ -52,13 +55,13 @@ def test_predict_success(mock_load_object, mock_feature_extractor_cls, mock_libr
     mock_load_object.side_effect = _load_object_side_effect
 
     # ---------- Act ----------------------------------------------------------
-    from src.pipeline.prediction_pipeline import AudioPredictor  # local import after patches
+    from src.pipeline.prediction_pipeline import AudioPredictor  # delayed import
     predictor = AudioPredictor()
     label = predictor.predict("dummy/audio.wav")
 
     # ---------- Assert -------------------------------------------------------
     assert label == "speech"
-    mock_librosa_load.assert_called_once()              # loaded audio
+    mock_librosa_load.assert_called_once()
     mock_fe_instance.extract_features.assert_called_once_with(fake_wave)
     fake_preprocessor.transform.assert_called_once()
     fake_model.predict.assert_called_once()
