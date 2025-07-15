@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🗣️ Accent Recognition App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-microphone"></i> Accent Recognition App</h1>
+            <p>Upload a <code>.wav</code> file of speech and this app will predict the speaker's <strong>accent</strong>.</p>
+        </header>
+
+        <div class="upload-section">
+            <h2><i class="fas fa-upload"></i> Upload Your Audio File</h2>
+            <div class="file-upload-wrapper">
+                <input type="file" id="audioFile" accept=".wav" class="file-input">
+                <label for="audioFile" class="file-label">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>Choose a .wav file or drag & drop</span>
+                </label>
+            </div>
+            <div id="audioPlayer" class="audio-player hidden">
+                <audio controls id="audioElement"></audio>
+                <div class="file-info">
+                    <span id="fileName"></span>
+                    <span id="fileSize"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="visualization-section hidden" id="visualizationSection">
+            <h2><i class="fas fa-chart-line"></i> Visualize Features</h2>
+            <div class="viz-controls">
+                <select id="vizType" class="viz-select">
+                    <option value="waveform">Waveform</option>
+                    <option value="mel_spectrogram">Mel Spectrogram</option>
+                    <option value="zcr">Zero Crossing Rate (ZCR)</option>
+                    <option value="rmse">RMSE</option>
+                </select>
+                <button id="generateViz" class="btn btn-secondary">
+                    <i class="fas fa-eye"></i> Generate Visualization
+                </button>
+            </div>
+            <div id="visualizationResult" class="viz-result"></div>
+        </div>
+
+        <div class="prediction-section hidden" id="predictionSection">
+            <h2><i class="fas fa-bullseye"></i> Predict Accent</h2>
+            <button id="predictBtn" class="btn btn-primary">
+                <i class="fas fa-search"></i> Run Prediction
+            </button>
+            <div id="predictionResult" class="prediction-result"></div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-card">
+                <h3><i class="fas fa-info-circle"></i> How This Works</h3>
+                <ul>
+                    <li><i class="fas fa-check"></i> Audio is <strong>preprocessed</strong> to extract features like MFCCs, Zero-Crossing Rate, and Energy.</li>
+                    <li><i class="fas fa-volume-up"></i> We apply <strong>augmentation techniques</strong> (noise, pitch shift, stretch) for robustness.</li>
+                    <li><i class="fas fa-brain"></i> A trained <strong>machine learning model</strong> (e.g., Logistic Regression) predicts the accent.</li>
+                    <li><i class="fas fa-box"></i> Entire pipeline is tracked and versioned using <strong>DVC & Git</strong> for reproducibility.</li>
+                </ul>
+            </div>
+            
+            <div class="info-card">
+                <h3><i class="fas fa-chart-bar"></i> MLflow Experiment Tracking</h3>
+                <a href="{{ dagshub_url }}" target="_blank" class="btn btn-outline">
+                    <i class="fas fa-external-link-alt"></i> View on DagsHub
+                </a>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>Built with ❤️ using Flask | Project Tracked via DagsHub</p>
+        </footer>
+    </div>
+
+    <div id="loader" class="loader hidden">
+        <div class="spinner"></div>
+        <p>Processing audio...</p>
+    </div>
+
+    <script src="{{ url_for('static', filename='scripts/script.js') }}"></script>
+</body>
+</html>
