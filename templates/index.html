@@ -56,24 +56,98 @@
             <div id="predictionResult" class="prediction-result"></div>
         </div>
 
-        <div class="info-section">
-            <div class="info-card">
-                <h3><i class="fas fa-info-circle"></i> How This Works</h3>
-                <ul>
-                    <li><i class="fas fa-check"></i> Audio is <strong>preprocessed</strong> to extract features like MFCCs, Zero-Crossing Rate, and Energy.</li>
-                    <li><i class="fas fa-volume-up"></i> We apply <strong>augmentation techniques</strong> (noise, pitch shift, stretch) for robustness.</li>
-                    <li><i class="fas fa-brain"></i> A trained <strong>machine learning model</strong> (e.g., Logistic Regression) predicts the accent.</li>
-                    <li><i class="fas fa-box"></i> Entire pipeline is tracked and versioned using <strong>DVC & Git</strong> for reproducibility.</li>
-                </ul>
+ <div class="info-section">
+        <div class="pipeline-card">
+            <h3><i class="fas fa-cogs"></i> ML Pipeline Architecture</h3>
+            
+            <div class="pipeline-flow">
+                <div class="pipeline-step">
+                    <div class="step-icon">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="step-title">Data Collection</div>
+                    <div class="step-description">Audio samples collected from YouTube using Python scripts</div>
+                </div>
+                
+                <div class="pipeline-step">
+                    <div class="step-icon">
+                        <i class="fas fa-wave-square"></i>
+                    </div>
+                    <div class="step-title">Feature Extraction</div>
+                    <div class="step-description">Extract MFCCs, ZCR, spectral features, and energy metrics</div>
+                </div>
+                
+                <div class="pipeline-step">
+                    <div class="step-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <div class="step-title">Aggregation</div>
+                    <div class="step-description">Combine and normalize features for model training</div>
+                </div>
+                
+                <div class="pipeline-step">
+                    <div class="step-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="step-title">Model Training</div>
+                    <div class="step-description">Train machine learning models</div>
+                </div>
+                
+                <!-- <div class="pipeline-step">
+                    <div class="step-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div class="step-title">Prediction</div>
+                    <div class="step-description">Real-time accent classification with confidence scores</div>
+                </div> -->
             </div>
             
-            <div class="info-card">
-                <h3><i class="fas fa-chart-bar"></i> MLflow Experiment Tracking</h3>
-                <a href="{{ dagshub_url }}" target="_blank" class="btn btn-outline">
-                    <i class="fas fa-external-link-alt"></i> View on DagsHub
-                </a>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="tool-title">MLflow</div>
+                    </div>
+                    <div class="tool-description">
+                        Experiment tracking, model registry, and performance monitoring for reproducible ML workflows
+                    </div>
+                </div>
+                
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <i class="fas fa-code-branch"></i>
+                        </div>
+                        <div class="tool-title">DVC</div>
+                    </div>
+                    <div class="tool-description">
+                        Data version control for managing datasets, models, and pipeline reproducibility
+                    </div>
+                </div>
+                
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="tool-title">GitHub Actions</div>
+                    </div>
+                    <div class="tool-description">
+                        Automated CI/CD pipeline for testing, building, and deploying the ML application
+                    </div>
+                </div>
             </div>
         </div>
+        
+        <div class="mlflow-card">
+            <h3><i class="fas fa-chart-bar"></i> MLflow Experiment Tracking</h3>
+            <a href="#" class="btn-outline">
+                <i class="fas fa-external-link-alt"></i> View Experiments on DagsHub
+            </a>
+        </div>
+    </div>
 
         <footer class="footer">
             <p>Built with ❤️ using Flask | Project Tracked via DagsHub</p>
