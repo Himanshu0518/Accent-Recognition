@@ -1,56 +1,86 @@
+import os
+import librosa
 import numpy as np
-from unittest.mock import MagicMock, patch
+import pandas as pd
+import mlflow
+import mlflow.pyfunc
+from src.constants import MLFLOW_TRACKING_URI
+from src.components.feature_extraction import FeatureExtractor
+from src.utils.main_utils import load_object
+from src.constants import SAMPLE_RATE, DURATION, MODEL_DIR
+from src.logger import logging
 
 
-@patch("src.pipeline.prediction_pipeline.mlflow.pyfunc.load_model")
-@patch("src.pipeline.prediction_pipeline.librosa.load")
-@patch("src.pipeline.prediction_pipeline.FeatureExtractor")
-@patch("src.pipeline.prediction_pipeline.load_object")
-def test_predict_success(
-    mock_load_object,
-    mock_feature_extractor_cls,
-    mock_librosa_load,
-    mock_mlflow_load_model,
-):
-    """AudioPredictor.predict should return the decoded label."""
+mlflow.set_tracking_uri(
+    MLFLOW_TRACKING_URI
+)
 
-    # 1️⃣  Fake audio returned by librosa.load
-    sr = 16_000
-    fake_wave = np.random.randn(sr * 2)  # 2‑second clip
-    mock_librosa_load.return_value = (fake_wave, sr)
 
-    # 2️⃣  Mock FeatureExtractor → extract_features
-    fake_features = [0] * 15
-    fe_instance = MagicMock()
-    fe_instance.extract_features.return_value = fake_features
-    mock_feature_extractor_cls.return_value = fe_instance
+class AudioPredictor:
+    """
+    Predicts speaker accent from an audio file by:
+      1. Loading a registered MLflow model (with preprocessing inside)
+      2. Extracting MFCC+ZCR+RMSE features from raw audio
+      3. Feeding features directly to the model
+      4. Decoding the predicted label with a saved label encoder
+    """
 
-    # 3️⃣  Mock MLflow model
-    fake_model = MagicMock()
-    fake_model.predict.return_value = np.array([0])
-    mock_mlflow_load_model.return_value = fake_model
+    def __init__(self, model_version: str = "2"):
+        try:
+            # --- Load registered MLflow model ------------------------
+            self.model_uri = f"models:/AccentClassifier/{model_version}"
+            self.model = mlflow.pyfunc.PyFuncModel = mlflow.pyfunc.load_model(
+                self.model_uri
+            )
 
-    # 4️⃣  Mock label encoder
-    class FakeLabelEncoder:
-        def inverse_transform(self, arr):
-            return np.array(["speech"])
+           
+            self.label_encoder = load_object(
+                os.path.join(MODEL_DIR, "label_encoder.joblib")
+            )
+            self.fe = FeatureExtractor()
 
-    def _load_object_side_effect(path):
-        # Only label_encoder.joblib is expected now
-        if path.endswith("label_encoder.joblib"):
-            return FakeLabelEncoder()
-        raise FileNotFoundError(path)
+            logging.info("AudioPredictor initialised (model %s).", self.model_uri)
+        except Exception as exc:
+            logging.exception("Failed to initialise AudioPredictor: %s", exc)
+            raise
 
-    mock_load_object.side_effect = _load_object_side_effect
 
-    # 5️⃣  Import under test (after mocks)
-    from src.pipeline.prediction_pipeline import AudioPredictor
+    def predict(self, audio_path: str) -> str | None:
+        """
+        Parameters
+        ----------
+        audio_path : str
+            Path to a .wav / .flac / .mp3 file.
 
-    predictor = AudioPredictor(model_version="2")
-    label = predictor.predict("dummy.wav")
+        Returns
+        -------
+        str  |  None
+            Predicted accent label, or None if prediction failed.
+        """
+        try:
+            # --- Load & trim/pad audio --------------------------------
+            y, _ = librosa.load(audio_path, sr=SAMPLE_RATE, duration=DURATION)
+            if y.size == 0:
+                raise ValueError("Audio file is empty or unreadable")
 
-    # 6️⃣  Assertions
-    assert label == "speech"
-    mock_librosa_load.assert_called_once()
-    fe_instance.extract_features.assert_called_once_with(fake_wave)
-    fake_model.predict.assert_called_once()
+            # --- Feature extraction -----------------------------------
+            features = self.fe.extract_features(y)
+            if features is None:
+                raise ValueError("Feature extractor returned None")
+
+            cols = [f"mfcc_{i+1}" for i in range(13)] + ["zcr", "rmse"]
+            X = pd.DataFrame([features], columns=cols)
+
+            # --- Inference (pre‑processing is inside model) -----------
+            y_pred = self.model.predict(X)
+            decoded = self.label_encoder.inverse_transform(np.ravel(y_pred))[0]
+
+            logging.info("Prediction complete: %s", decoded)
+            return decoded
+
+        except Exception as exc:
+            logging.exception("Prediction failed: %s", exc)
+            return None
+
+
+
