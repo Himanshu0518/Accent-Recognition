@@ -1,22 +1,16 @@
-# Use a lightweight Python image
 FROM python:3.10-slim
 
-# Set working directory inside container
 WORKDIR /app
-
-# Copy project files into the container
 COPY . /app
 
-# Install system-level dependencies (for audio processing)
 RUN apt-get update && apt-get install -y ffmpeg && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Expose port 5000 (Flask default)
-EXPOSE 5000
+# Tell Render what port we plan to bind to (Render sets PORT env var)
+EXPOSE 10000
 
-# Run the Flask app
+# Entrypoint that runs the Flask app (must bind to $PORT in app.py)
 CMD ["python", "app.py"]

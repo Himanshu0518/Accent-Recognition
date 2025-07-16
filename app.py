@@ -165,5 +165,8 @@ def predict():
 def too_large(e):
     return jsonify({'error': 'File too large. Maximum size is 16MB.'}), 413
 
-if __name__ == '__main__':
-    app.run(debug=True,host="0.0.0.0", port=5000)
+if __name__ == "__main__":
+    import os
+    port = int(os.environ.get("PORT", 10000))
+    print(f"Starting Flask app on port {port}")
+    app.run(host="0.0.0.0", port=port, debug=True)
