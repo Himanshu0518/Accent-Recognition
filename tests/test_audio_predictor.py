@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import patch, MagicMock
 from src.pipeline.prediction_pipeline import AudioPredictor
 
@@ -6,32 +5,12 @@ from src.pipeline.prediction_pipeline import AudioPredictor
 @patch("src.pipeline.prediction_pipeline.load_object")
 @patch("src.pipeline.prediction_pipeline.FeatureExtractor")
 @patch("src.pipeline.prediction_pipeline.librosa.load")
-def test_predict_success(
-    mock_librosa_load,
-    mock_feature_extractor_cls,
-    mock_load_object,
-    mock_mlflow_load_model,
-):
-    # Mock the audio loading
-    mock_librosa_load.return_value = ( [0.1] * 22050, 16000 )  # 1 second of dummy audio
+def test_predict(mock_load, mock_FE, mock_load_obj, mock_model_load):
+    mock_load.return_value = ([0.1] * 16000, 16000)
 
-    # Mock the feature extractor
-    mock_fe_instance = MagicMock()
-    mock_fe_instance.extract_features.return_value = [0.1] * 15
-    mock_feature_extractor_cls.return_value = mock_fe_instance
+    mock_FE.return_value.extract_features.return_value = [0.1] * 15
+    mock_load_obj.return_value.inverse_transform.return_value = ["Indian"]
+    mock_model_load.return_value.predict.return_value = [[0]]
 
-    # Mock the label encoder
-    mock_label_encoder = MagicMock()
-    mock_label_encoder.inverse_transform.return_value = ["Indian"]
-    mock_load_object.return_value = mock_label_encoder
-
-    # Mock the model
-    mock_model = MagicMock()
-    mock_model.predict.return_value = [[0]]
-    mock_mlflow_load_model.return_value = mock_model
-
-    # Run the predictor
-    predictor = AudioPredictor(model_version="2")
-    result = predictor.predict("dummy.wav")
-
+    result = AudioPredictor().predict("test.wav")
     assert result == "Indian"
