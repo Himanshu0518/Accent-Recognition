@@ -24,7 +24,7 @@ jobs:
           
 
       - name: Run Tests
-        run: pytest tests/test_audio_predictor.py -v
+        run: pytest  -v
         env:
           PYTHONPATH: .
 
