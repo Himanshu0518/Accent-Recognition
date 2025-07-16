@@ -47,5 +47,5 @@ jobs:
           docker build -t himanshu0518/accent-recognition-app:latest .
           docker push himanshu0518/accent-recognition-app:latest
 
-      - name: Trigger Render Deploy
+      - name: Trigger  Render  Deploy
         run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
