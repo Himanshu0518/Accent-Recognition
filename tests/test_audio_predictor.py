@@ -1,56 +1,37 @@
-# import numpy as np
-# from unittest.mock import MagicMock, patch
+import pytest
+from unittest.mock import patch, MagicMock
+from src.pipeline.prediction_pipeline import AudioPredictor
 
+@patch("src.pipeline.prediction_pipeline.mlflow.pyfunc.load_model")
+@patch("src.pipeline.prediction_pipeline.load_object")
+@patch("src.pipeline.prediction_pipeline.FeatureExtractor")
+@patch("src.pipeline.prediction_pipeline.librosa.load")
+def test_predict_success(
+    mock_librosa_load,
+    mock_feature_extractor_cls,
+    mock_load_object,
+    mock_mlflow_load_model,
+):
+    # Mock the audio loading
+    mock_librosa_load.return_value = ( [0.1] * 22050, 16000 )  # 1 second of dummy audio
 
-# @patch("src.pipeline.prediction_pipeline.mlflow.pyfunc.load_model")
-# @patch("src.pipeline.prediction_pipeline.librosa.load")
-# @patch("src.pipeline.prediction_pipeline.FeatureExtractor")
-# @patch("src.utils.main_utils.load_object")  # ✅ Corrected patch path
-# def test_predict_success(
-#     mock_load_object,
-#     mock_feature_extractor_cls,
-#     mock_librosa_load,
-#     mock_mlflow_load_model,
-# ):
-#     """AudioPredictor.predict should return the decoded label."""
+    # Mock the feature extractor
+    mock_fe_instance = MagicMock()
+    mock_fe_instance.extract_features.return_value = [0.1] * 15
+    mock_feature_extractor_cls.return_value = mock_fe_instance
 
-#     # 1️⃣ Fake audio returned by librosa.load
-#     sr = 16000
-#     fake_wave = np.random.randn(sr * 2)
-#     mock_librosa_load.return_value = (fake_wave, sr)
+    # Mock the label encoder
+    mock_label_encoder = MagicMock()
+    mock_label_encoder.inverse_transform.return_value = ["Indian"]
+    mock_load_object.return_value = mock_label_encoder
 
-#     # 2️⃣ Mock FeatureExtractor
-#     fake_features = [0] * 15
-#     fe_instance = MagicMock()
-#     fe_instance.extract_features.return_value = fake_features
-#     mock_feature_extractor_cls.return_value = fe_instance
+    # Mock the model
+    mock_model = MagicMock()
+    mock_model.predict.return_value = [[0]]
+    mock_mlflow_load_model.return_value = mock_model
 
-#     # 3️⃣ Mock MLflow model
-#     fake_model = MagicMock()
-#     fake_model.predict.return_value = np.array([0])
-#     mock_mlflow_load_model.return_value = fake_model
+    # Run the predictor
+    predictor = AudioPredictor(model_version="2")
+    result = predictor.predict("dummy.wav")
 
-#     # 4️⃣ Mock label encoder
-#     class FakeLabelEncoder:
-#         def inverse_transform(self, arr):
-#             return np.array(["speech"])
-
-#     # 5️⃣ load_object returns FakeLabelEncoder when label_encoder.joblib is loaded
-#     def _load_object_side_effect(path):
-#         if path.endswith("label_encoder.joblib"):
-#             return FakeLabelEncoder()
-#         raise FileNotFoundError(path)
-
-#     mock_load_object.side_effect = _load_object_side_effect
-
-#     # 6️⃣ Import AudioPredictor after mocks are in place
-#     from src.pipeline.prediction_pipeline import AudioPredictor
-
-#     predictor = AudioPredictor(model_version="2")
-#     label = predictor.predict("dummy.wav")
-
-#     # 7️⃣ Assertions
-#     assert label == "speech"
-#     mock_librosa_load.assert_called_once()
-#     fe_instance.extract_features.assert_called_once_with(fake_wave)
-#     fake_model.predict.assert_called_once()
+    assert result == "Indian"
