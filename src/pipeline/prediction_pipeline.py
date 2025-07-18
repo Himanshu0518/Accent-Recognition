@@ -29,7 +29,7 @@ class AudioPredictor:
         try:
             # --- Load registered MLflow model ------------------------
             self.model_uri = f"models:/AccentClassifier/{model_version}"
-            self.model = mlflow.pyfunc.PyFuncModel = mlflow.pyfunc.load_model(
+            self.model  = mlflow.pyfunc.load_model(
                 self.model_uri
             )
 
