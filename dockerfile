@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y ffmpeg && \
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
+ENV PYTHONPATH="${PYTHONPATH}:/app"
 
 # Tell Render what port we plan to bind to (Render sets PORT env var)
 EXPOSE 10000

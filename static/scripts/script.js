@@ -37,13 +37,13 @@
                 showError('Please select an audio file first.');
                 return;
             }
-
+             console.log("Calling uploadFile with file:");
             const formData = new FormData();
             formData.append('audio', uploadedFile);
 
             showLoading(true);
             hideResults();
-
+            
             fetch('/upload', {
                 method: 'POST',
                 body: formData

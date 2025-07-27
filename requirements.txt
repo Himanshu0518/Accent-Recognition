@@ -41,4 +41,4 @@ PyYAML==6.0.2  # for configuration management
 pytest>=8.4.1 
   
 pytest-mock==3.10.0  # for mocking in tests
-gunicorn==21.2.0
+psutil==7.0.0

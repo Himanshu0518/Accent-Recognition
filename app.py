@@ -45,10 +45,10 @@ def upload_audio():
         return jsonify({'error': 'No audio file provided'}), 400
     
     file = request.files['audio']
-    print(f"File received: {file.filename}")
+    
     
     if file.filename == '':
-        print("Empty filename")
+        
         return jsonify({'error': 'No file selected'}), 400
     
     if not file.filename.lower().endswith('.wav'):
@@ -63,13 +63,13 @@ def upload_audio():
             file.save(tmp.name)
             tmp_path = tmp.name
         
-        print(f"File saved to: {tmp_path}")
+       
         
         # Load audio for basic info
         y, sr = librosa.load(tmp_path, sr=None)
         duration = len(y) / sr
         
-        print(f"Audio loaded: duration={duration}, sr={sr}")
+       
         
         # Store file path in session or temporary storage
         # For production, consider using Redis or database
