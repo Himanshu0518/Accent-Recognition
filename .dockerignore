@@ -16,10 +16,7 @@ Notebooks/
 *.npy
 data/
 
-# Keep these if your app loads them
-# DO NOT IGNORE if model or config is .pkl or .json
-# *.pkl
-# *.json
+
 
 # DVC / MLflow
 .mlflow/
@@ -32,9 +29,6 @@ dvc.lock
 # Streamlit/temp files
 *.db
 *.log
-tmp/
-temp/
-*.tmp
 
 # OS & IDE files
 .DS_Store

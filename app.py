@@ -10,7 +10,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from src.pipeline.prediction_pipeline import AudioPredictor
 from visualizer import (
-    plot_waveform, plot_mel_spectrogram, plot_zcr, plot_rmse, plot_feature_importance
+    plot_waveform, plot_mel_spectrogram, plot_zcr, plot_rmse
 )
 
 app = Flask(__name__)
@@ -58,6 +58,8 @@ def upload_audio():
     try:
         # Save uploaded file temporarily
         with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
+
+
             file.save(tmp.name)
             tmp_path = tmp.name
         
