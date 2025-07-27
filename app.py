@@ -128,34 +128,34 @@ def predict():
     try:
         result = predictor.predict(tmp_path)
         
-        if isinstance(result, dict):
-            # Get the predicted accent
-            predicted_accent = max(result, key=result.get).capitalize()
+        # if isinstance(result, dict):
+        #     # Get the predicted accent
+        #     predicted_accent = max(result, key=result.get).capitalize()
             
-            # Generate feature importance plot
-            feature_importance = {
-                "MFCC": 0.35,
-                "ZCR": 0.2,
-                "RMSE": 0.15,
-                "Chroma": 0.1,
-                "Spectral Centroid": 0.2
-            }
+        #     # Generate feature importance plot
+        #     feature_importance = {
+        #         "MFCC": 0.35,
+        #         "ZCR": 0.2,
+        #         "RMSE": 0.15,
+        #         "Chroma": 0.1,
+        #         "Spectral Centroid": 0.2
+        #     }
             
-            fig = plot_feature_importance(feature_importance)
-            feature_plot = fig_to_base64(fig)
+        #     fig = plot_feature_importance(feature_importance)
+        #     feature_plot = fig_to_base64(fig)
             
-            return jsonify({
-                'success': True,
-                'predicted_accent': predicted_accent,
-                'confidence': result,
-                'feature_importance': feature_plot
-            })
-        else:
-            return jsonify({
+        #     return jsonify({
+        #         'success': True,
+        #         'predicted_accent': predicted_accent,
+        #         'confidence': result,
+        #         'feature_importance': feature_plot
+        #     })
+        # else:
+        return jsonify({
                 'success': True,
                 'predicted_accent': result.capitalize(),
                 'confidence': None,
-                'feature_importance': None
+                
             })
     
     except Exception as e:
