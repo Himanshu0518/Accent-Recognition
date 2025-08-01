@@ -1,185 +1,201 @@
-                             🗣️ Accent Recognition using Machine Learning
+# 🗣️ Accent Recognition using Machine Learning
 
-Predict the speaker’s accent from audio using MFCCs, audio augmentation, and classical ML models.
+Predict the speaker’s accent from audio using MFCCs, data augmentation, and classical machine learning techniques.
 
-This project predicts the accent of a speaker from a .wav audio sample using machine learning.
-It is built as a complete end-to-end pipeline including:
+This project is built as an end-to-end MLOps pipeline that includes:
 
-🎧 Audio preprocessing and augmentation
+- 🎧 **Audio preprocessing** & **augmentation**
+- 🔍 **Feature extraction** (MFCC, ZCR, RMSE)
+- 🤖 **Model training** and **evaluation**
+- 📦 **Data versioning via DVC**
+- 🌐 **Streamlit app** for real-time accent prediction
+- 🚀 **CI/CD Deployment** on **AWS EC2** using **GitHub Actions**
+- 📊 **MLflow tracking**
+- 📁 **Custom dataset**, collected and published on [Kaggle](https://www.kaggle.com/)
 
-🔍 Feature extraction (MFCC, ZCR, RMSE)
+---
 
-🧠 Model training and evaluation (Random Forest / Logistic Regression)
+## 📥 Data Collection
 
-🧪 Data versioning via DVC
+All accent audio data was collected manually using Python-based scripts. The raw `.wav` files were then preprocessed and labeled appropriately. The finalized dataset has been published publicly on **Kaggle** for reproducibility and benchmarking.
 
-🌐 Streamlit app for real-time accent prediction
+---
 
+## 📂 Project Structure
 
-📂 Project Structure
- ``` bash 
+```bash
 Accent-Recognition/
 │
-├── .dvc/                                # DVC internal files
-├── .gitignore                           # Ignore data, models, cache files
-├── dvc.yaml                             # DVC pipeline config (custom stages)
-├── dvc.lock                             # Auto-generated DVC lock file
+├── .dvc/                     # DVC internal files
+├── dvc.yaml                  # DVC pipeline stages
+├── dvc.lock                  # DVC lock file
+├── data/                     # Dataset directories
+│   ├── raw/                  # Raw .wav files
+│   ├── interim/              # Extracted features (CSV)
+│   ├── processed/            # Cleaned dataset
+│   └── raw.dvc               # DVC tracking file
 │
-├── data/                                # All dataset-related files
-│   ├── raw/                             # Raw .wav audio files
-│   ├── interim/                         # Feature CSVs (e.g., MFCCs)
-│   ├── processed/                       # Cleaned/structured data (optional)
-│   └── raw.dvc                          # DVC tracking file for raw data
+├── models/                   # Serialized ML models
+│   └── model.joblib
+│   └── preprocessor.joblib
+│   └── labelencoder.joblib
 │
-├── models/                              # Trained ML models
-│   └── model.joblib                     # Final serialized model
-│
-├── artifacts/                           # Saved encoders, scalers, etc.
-│   ├── preprocessor.joblib              # Scaler or transformation pipeline
-│   └── label_encoder.joblib             # LabelEncoder for accent labels
-│
-├── src/                                 # Source code for all components
-│   ├── __init__.py
-│   ├── constants.py                     # Global constants and paths
-│   ├── logger.py                        # Logging configuration
-│   ├── from_root.py                     # Utility to resolve absolute paths
-│
-│   ├── utils/                           # Reusable utility functions
-│   │   ├── __init__.py
-│   │   └── main_utils.py                # save/load objects, dataframe utils
-│
-│   ├── components/                      # Core ML components
-│   │   ├── __init__.py
-│   │   ├── data_preprocessing.py        # Data cleaning/preprocessing
-│   │   ├── data_augmentation.py         # Audio augmentation (noise, pitch, etc.)
-│   │   ├── feature_extraction.py        # MFCC/ZCR/RMSE extractor
-│   │   ├── model_training.py            # Training models
-│   │   ├── model_evaluation.py          # Accuracy, confusion matrix, scores
-│   │   └── visualisation.py             # Learning curves, plots, etc.
-│
+├── src/                      # Source code
+│   ├── constants.py
+│   ├── logger.py
+│   ├── from_root.py
+│   ├── utils/
+│   │   └── main_utils.py
+│   ├── components/
+│   │   ├── data_preprocessing.py
+│   │   ├── data_augmentation.py
+│   │   ├── feature_extraction.py
+│   │   ├── model_training.py
+│   │   ├── model_evaluation.py
+│   │   └── visualisation.py
 │   └── pipeline/
-│       ├── __init__.py
-│       └── prediction_pipeline.py , trainning_pipeline.py    model
-|        
+│       ├── prediction_pipeline.py
+│       └── trainning_pipeline.py
 │
-├── app.py                               # Streamlit app for accent prediction
-├── requirements.txt                     # All required Python dependencies
-├── README.md                            # Project overview and usage
-└── setup.py                             # (Optional) Package installation file
-├── dvc.yaml                             
-└── params.yaml                           
-├── project.toml                            
-└── ddvc.lock 
-etc
+├── app.py                   # Streamlit web app
+├── requirements.txt
+├── setup.py
+├── pyproject.toml
+├── params.yaml
+└── README.md
 ```
-  
+## 🎛 Features Extracted
 
-### 📊 Features Extracted
-From each audio file, we extract:
+🎵 MFCCs – Mel-Frequency Cepstral Coefficients
 
-MFCCs (13 coefficients) — Mel Frequency Cepstral Coefficients
+🎚️ ZCR – Zero Crossing Rate
 
-ZCR — Zero Crossing Rate
-
-RMSE — Root Mean Square Energy
+💡 RMSE – Root Mean Square Energy
 
 
-### 🔄 Audio Augmentation
+## 🔄 Audio Augmentation
 
-To improve model generalization, we apply:
+To improve model robustness:
 
-🎵 Time stretching
+⏱️ Time Stretching
 
-📈 Pitch shifting
+🎤 Pitch Shifting
 
-🔊 Noise addition
+📢 Noise Injection
 
-This ensures robustness to variations in speech.
+These augmentations increase diversity and generalizability across speaker conditions.
 
 
-### 🤖 Model Training
+## 🤖 Model Training
 
 Models Compared:
 
 RandomForestClassifier
 
-LogisticRegression (final selected)
+LogisticRegression 
 
-Evaluation Metrics:
+
+## Evaluation Metrics:
 
 Accuracy
 
-Confusion matrix
+Confusion Matrix
 
-Learning curve
+Learning Curve
 
-Final Model: Logistic Regression
+✅ Final Model: Logistic Regression
 
-Test Accuracy: ~96%
+✅ Test Accuracy: ~96%
 
-### 📦 Version Control with DVC
 
-used DVC to version:
+## 📦 Data Versioning with DVC
 
-Raw & interim datasets
+To ensure reproducibility and data tracking:
 
-Feature-engineered files
-
-Trained models
-
-``` bash 
+```bash
 dvc init
 dvc add data/raw
 dvc repro
 ```
-
-### 🌐 Web App Interface (Streamlit)
-
-Upload a .wav audio
-
-See waveform and spectrogram
-
-View predicted accent + confidence
-
-Works on local or remote deployment
+All stages — from raw data to feature extraction to final model — are versioned with DVC.
 
 
-### 📈 Future Enhancements (Optional)
+## 🌐 Web Application 
 
-🔉 Add accent conversion via TTS for demo/playback
+A simple and interactive flask app allows users to:
 
-🎙️ Live mic input + real-time prediction
+Upload a .wav audio file
 
-📦 Deploy via Streamlit Cloud or Hugging Face Spaces
+Visualize waveform & spectrogram
 
-🧪 How to Run
+Get real-time accent prediction
 
-✅ Install dependencies:
 
-```bash
-pip install -r requirements.txt
-```
+## 🧪 CI/CD Deployment (AWS EC2 + Docker + GitHub Actions)
 
-✅ Run Streamlit app:
+Dockerized app is built and pushed to Amazon ECR
 
-```bash
-streamlit run app.py
-```
+On every push to main, GitHub Actions triggers:
 
-👨‍💻 Author
+✅ CI: Docker Build → Push to ECR
 
-Himanshu Singh
+✅ CD: SSH into EC2 → Pull & Run Docker container
 
-Prefinal - year  B.Tech ECE  student @ IIIT Una
-
-GitHub: [@Himanshu0518](https://github.com/Himanshu0518)
-
-DagsHub: [@himanshu0518](https://dagshub.com/Himanshu0518)
+✅ EC2 Port: 8000
 
 
 ### 📊 MLflow Tracking
 
-To explore model parameters, metrics, and experiment runs:
+To explore model parameters, metrics, and experiment runs and model registry :
 
 [![MLflow Tracking](https://img.shields.io/badge/MLflow-enabled-blue)](https://dagshub.com/Himanshu0518/Accent-Recognition.mlflow/#/experiments/0?searchFilter=&orderByKey=attributes.start_time&orderByAsc=false&startTime=ALL&lifecycleFilter=Active&modelVersionFilter=All+Runs&datasetsFilter=W10%3D)
 
+
+🧱 How to Run This Project
+
+** 1. Install Dependencies **
+```bash
+pip install -r requirements.txt
+```
+
+** Run flask App **
+```bash
+python app.py
+```
+
+**🐳 Run via Docker**
+(preferred)
+You can directly pull and run the app using Docker:
+
+🔻 Pull Docker Image
+```bash
+docker pull himanshu0518/accent-recognition-app:latest
+```
+
+Run the container
+
+```bash
+docker run -p 8000:8000 himanshu0518/accent-recognition-app:latest
+```
+
+## 🎯 Future Improvements
+
+🎙️ Real-time accent detection from microphone input
+
+🔁 Accent-to-Accent TTS conversion
+
+
+## 👨‍💻 Author
+
+**Himanshu Singh**  
+
+Pre-final year B.Tech ECE @ IIIT Una
+
+- 🐙 GitHub: [@Himanshu0518](https://github.com/Himanshu0518) 
+
+- 📊 DagsHub: [@Himanshu0518](https://dagshub.com/Himanshu0518/Accent-Recognition)  
+
+- 🐳 DockerHub: [himanshu0518/accent-detector](https://hub.docker.com/repository/docker/himanshu0518/accent-recognition-app/general)
+
+⚠️ Disclaimer
+The project is currently deployed using AWS Free Tier services. The services are removed after testing to save credits.
