@@ -72,7 +72,7 @@ Accent-Recognition/
 │       ├── prediction_pipeline.py
 │       └── trainning_pipeline.py
 │
-├── app.py                   # Streamlit web app
+├── app.py                   
 ├── requirements.txt
 ├── setup.py
 ├── pyproject.toml
