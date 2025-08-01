@@ -1,6 +1,6 @@
 # 🗣️ Accent Recognition using Machine Learning
 
-Predict the speaker’s accent from audio using MFCCs, data augmentation, and classical machine learning techniques.
+Predict the speaker’s accent from audio using MFCCs, ZCR, RMSE, data augmentation, and classical machine learning techniques.
 
 This project is built as an end-to-end MLOps pipeline that includes:
 
@@ -8,18 +8,29 @@ This project is built as an end-to-end MLOps pipeline that includes:
 - 🔍 **Feature extraction** (MFCC, ZCR, RMSE)
 - 🤖 **Model training** and **evaluation**
 - 📦 **Data versioning via DVC**
-- 🌐 **Streamlit app** for real-time accent prediction
+- 🌐 **Flask app** for real-time accent prediction
 - 🚀 **CI/CD Deployment** on **AWS EC2** using **GitHub Actions**
 - 📊 **MLflow tracking**
-- 📁 **Custom dataset**, collected and published on [Kaggle](https://www.kaggle.com/)
 
 ---
+
 
 ## 📥 Data Collection
 
 All accent audio data was collected manually using Python-based scripts. The raw `.wav` files were then preprocessed and labeled appropriately. The finalized dataset has been published publicly on **Kaggle** for reproducibility and benchmarking.
 
 ---
+
+
+ ## 📁 Dataset
+
+This project uses a **custom dataset** collected and published on Kaggle:  
+🔗 [English Accent Classification Dataset](https://www.kaggle.com/datasets/himanshu9648/english-accent-classification-dataset)
+
+The dataset contains audio recordings of English speakers with **Indian**, **American**, and **British** accents. It is used to train a machine learning model to classify the speaker's accent based on extracted audio features 
+
+---
+
 
 ## 📂 Project Structure
 
@@ -40,13 +51,16 @@ Accent-Recognition/
 │   └── preprocessor.joblib
 │   └── labelencoder.joblib
 │
-├── src/                      # Source code
+├── src/ 
+|   ├── __init__.py                     # Source code
 │   ├── constants.py
 │   ├── logger.py
 │   ├── from_root.py
 │   ├── utils/
+│   │   ├── __init__.py
 │   │   └── main_utils.py
 │   ├── components/
+│   │   ├── __init__.py
 │   │   ├── data_preprocessing.py
 │   │   ├── data_augmentation.py
 │   │   ├── feature_extraction.py
@@ -54,6 +68,7 @@ Accent-Recognition/
 │   │   ├── model_evaluation.py
 │   │   └── visualisation.py
 │   └── pipeline/
+│       ├── __init__.py
 │       ├── prediction_pipeline.py
 │       └── trainning_pipeline.py
 │
@@ -64,6 +79,7 @@ Accent-Recognition/
 ├── params.yaml
 └── README.md
 ```
+
 ## 🎛 Features Extracted
 
 🎵 MFCCs – Mel-Frequency Cepstral Coefficients
@@ -195,7 +211,7 @@ Pre-final year B.Tech ECE @ IIIT Una
 
 - 📊 DagsHub: [@Himanshu0518](https://dagshub.com/Himanshu0518/Accent-Recognition)  
 
-- 🐳 DockerHub: [himanshu0518/accent-detector](https://hub.docker.com/repository/docker/himanshu0518/accent-recognition-app/general)
+- 🐳 DockerHub: [himanshu0518/accent-recognition-app](https://hub.docker.com/repository/docker/himanshu0518/accent-recognition-app/general)
 
 ⚠️ Disclaimer
 The project is currently deployed using AWS Free Tier services. The services are removed after testing to save credits.
