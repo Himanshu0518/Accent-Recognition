@@ -139,3 +139,4 @@ WindowsPowerShell/
 /artifacts
 mlruns /
 data/
+models/

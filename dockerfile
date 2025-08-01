@@ -8,8 +8,7 @@ RUN apt-get update && apt-get install -y ffmpeg && \
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-ENV PYTHONPATH="${PYTHONPATH}:/app"
 
-EXPOSE 10000
+EXPOSE 8000
 
 CMD ["python", "app.py"]

@@ -43,10 +43,16 @@ Thumbs.db
 .gitignore
 
 # MLflow local runs directory
-mlruns/
+mlruns
 
 # Custom logs or tracking files
-logs/
+logs
 README.md
-reports/
+reports
 WindowsPowerShell/
+notebooks
+.gitignore
+LICENSE
+.dvc
+dvc.lock
+dvc.yaml
