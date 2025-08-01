@@ -4,6 +4,8 @@ from src.utils.main_utils import load_dataframe, load_object, write_yaml
 from src.logger import logging
 from from_root import from_root
 from src.constants import *
+from src.exception import MyException
+import sys
 
 class ModelEvaluator:
     def __init__(self, model_path=MODEL_PATH):
@@ -42,6 +44,6 @@ class ModelEvaluator:
             return metrics , y_pred , y_true
             
         except Exception as e:
-            logging.error(f"Model evaluation failed: {e}")
-            raise e
+            raise MyException(e,sys)
+            
 

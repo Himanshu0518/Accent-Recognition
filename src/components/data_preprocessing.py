@@ -1,4 +1,5 @@
 import os
+import sys
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder, StandardScaler
@@ -9,6 +10,7 @@ from from_root import from_root
 from src.logger import logging
 from src.utils.main_utils import save_object
 from src.constants import *
+from src.exception import MyException
 
 class DataPreprocessor:
     def __init__(self, input_csv: str, output_dir: str, test_size=TEST_SIZE, random_state=RANDOM_STATE):
@@ -85,8 +87,7 @@ class DataPreprocessor:
             logging.info("Data preprocessing completed and saved successfully.")
 
         except Exception as e:
-            logging.exception(f"Error during preprocessing: {e}")
-            raise
+             raise MyException(e,sys)
 
 if __name__ == "__main__":
     input_csv = FEATURES_CSV

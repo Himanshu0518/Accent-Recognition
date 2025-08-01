@@ -5,6 +5,8 @@ from src.utils.main_utils import load_dataframe, read_yaml, save_object
 from sklearn.base import ClassifierMixin
 from sklearn.utils import all_estimators
 from src.constants import *
+import sys 
+from src.exception import MyException
 
 class ModelTrainer:
     def __init__(self, model_path= MODEL_PATH):
@@ -46,6 +48,6 @@ class ModelTrainer:
             return model,model_name, model_params 
         
         except Exception as e:
-            logging.error(f"Model training failed: {e}")
-            raise e
+            raise MyException(e,sys)
+           
 

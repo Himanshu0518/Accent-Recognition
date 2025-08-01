@@ -10,8 +10,6 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 ENV PYTHONPATH="${PYTHONPATH}:/app"
 
-# Tell Render what port we plan to bind to (Render sets PORT env var)
 EXPOSE 10000
 
-# Entrypoint that runs the Flask app (must bind to $PORT in app.py)
 CMD ["python", "app.py"]

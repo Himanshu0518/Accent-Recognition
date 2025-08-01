@@ -9,7 +9,8 @@ from src.logger import logging
 from src.constants import *
 from src.utils.main_utils import save_dataframe
 from src.components.data_augmentation import DataAugmentor
-
+from src.exception import MyException
+import sys 
 
 class FeatureExtractor:
     def __init__(self, sr=SAMPLE_RATE):
@@ -67,8 +68,7 @@ class FeatureExtractor:
                         labels.append(label)
 
         except Exception as e:
-            logging.error(f"[CRITICAL] Feature extraction failed: {e}")
-            return
+            raise MyException(e,sys)
 
         mfcc_columns = [f"mfcc_{i+1}" for i in range(self.n_mfcc)]
         all_columns = mfcc_columns + ["zcr", "rmse"]

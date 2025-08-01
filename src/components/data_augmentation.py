@@ -1,10 +1,10 @@
 # src/components/augment_and_save.py
-
+import sys
 import librosa
 import numpy as np
 from src.logger import logging
 from src.constants import *
-
+from src.exception import MyException
 
 class DataAugmentor:
     def __init__(self, sr=SAMPLE_RATE, duration=DURATION):
@@ -32,7 +32,6 @@ class DataAugmentor:
                 self._pad_or_trim(y_noise),
             ]
         except Exception as e:
-            logging.error(f"[AUGMENT] Failed: {e}")
-            return []
+            raise MyException(e,sys)
 
   
