@@ -12,6 +12,7 @@ from src.pipeline.prediction_pipeline import AudioPredictor
 from visualizer import (
     plot_waveform, plot_mel_spectrogram, plot_zcr, plot_rmse
 )
+from src.logger import logging
 from src.exception import MyException
 import sys 
 
@@ -38,12 +39,12 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload_audio():
-    print("Upload route called")
-    print("Request files:", request.files.keys())
+    logging.info("Upload route called")
+    logging.info("Request files:", request.files.keys())
     print("Request form:", request.form.keys())
     
     if 'audio' not in request.files:
-        print("No 'audio' key in request.files")
+      
         return jsonify({'error': 'No audio file provided'}), 400
     
     file = request.files['audio']
@@ -65,12 +66,11 @@ def upload_audio():
             file.save(tmp.name)
             tmp_path = tmp.name
         
-       
         
         # Load audio for basic info
         y, sr = librosa.load(tmp_path, sr=None)
         duration = len(y) / sr
-        
+        logging.info(f"sampling rate: {sr}")
        
         
         # Store file path in session or temporary storage
@@ -132,29 +132,6 @@ def predict():
     try:
         result = predictor.predict(tmp_path)
         
-        # if isinstance(result, dict):
-        #     # Get the predicted accent
-        #     predicted_accent = max(result, key=result.get).capitalize()
-            
-        #     # Generate feature importance plot
-        #     feature_importance = {
-        #         "MFCC": 0.35,
-        #         "ZCR": 0.2,
-        #         "RMSE": 0.15,
-        #         "Chroma": 0.1,
-        #         "Spectral Centroid": 0.2
-        #     }
-            
-        #     fig = plot_feature_importance(feature_importance)
-        #     feature_plot = fig_to_base64(fig)
-            
-        #     return jsonify({
-        #         'success': True,
-        #         'predicted_accent': predicted_accent,
-        #         'confidence': result,
-        #         'feature_importance': feature_plot
-        #     })
-        # else:
         return jsonify({
                 'success': True,
                 'predicted_accent': result.capitalize(),
